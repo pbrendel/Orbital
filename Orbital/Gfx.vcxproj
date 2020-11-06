@@ -11,24 +11,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Core\assert.cpp" />
-    <ClCompile Include="Core\file.cpp" />
-    <ClCompile Include="Core\perfCounter.cpp" />
+    <ClCompile Include="Gfx\d3d.cpp" />
+    <ClCompile Include="Gfx\d3dPerfCounter.cpp" />
+    <ClCompile Include="Gfx\image.cpp" />
+    <ClCompile Include="Gfx\shaderCache.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\assert.h" />
-    <ClInclude Include="Core\file.h" />
-    <ClInclude Include="Core\memUtils.h" />
-    <ClInclude Include="Core\perfCounter.h" />
-    <ClInclude Include="Core\types.h" />
-    <ClInclude Include="Core\utils.h" />
-    <ClInclude Include="Core\vecTypes.h" />
+    <ClInclude Include="Gfx\d3d.h" />
+    <ClInclude Include="Gfx\d3d.hpp" />
+    <ClInclude Include="Gfx\d3dHelpers.h" />
+    <ClInclude Include="Gfx\d3dPerfCounter.h" />
+    <ClInclude Include="Gfx\image.h" />
+    <ClInclude Include="Gfx\shaderCache.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e8de5c8b-5a99-4e12-9e5c-1e4bcc8fe411}</ProjectGuid>
-    <RootNamespace>Core</RootNamespace>
+    <ProjectGuid>{9dd50ce2-1e62-4b4f-b389-0520ba8a329b}</ProjectGuid>
+    <RootNamespace>Gfx</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -59,20 +59,24 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(ProjectDir)..\bin\lib\</OutDir>
+    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir);$(ProjectDir)..\..\external;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\bin\lib\;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
     <OutDir>$(ProjectDir)..\bin\lib\</OutDir>
+    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir);$(ProjectDir)..\..\external;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\bin\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -90,7 +94,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>

@@ -11,36 +11,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Core\assert.cpp">
+    <ClCompile Include="Gfx\d3d.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\file.cpp">
+    <ClCompile Include="Gfx\d3dPerfCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\perfCounter.cpp">
+    <ClCompile Include="Gfx\image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gfx\shaderCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\assert.h">
+    <ClInclude Include="Gfx\d3d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\file.h">
+    <ClInclude Include="Gfx\d3d.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\memUtils.h">
+    <ClInclude Include="Gfx\d3dHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\types.h">
+    <ClInclude Include="Gfx\d3dPerfCounter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\utils.h">
+    <ClInclude Include="Gfx\image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\vecTypes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\perfCounter.h">
+    <ClInclude Include="Gfx\shaderCache.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
