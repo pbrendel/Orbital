@@ -7,6 +7,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Orbital\Core.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main", "Orbital\Main.vcxproj", "{F276D362-8882-402E-9E68-11D6EA917AE7}"
 	ProjectSection(ProjectDependencies) = postProject
+		{DCBDE805-D8C4-43A4-8ADC-9C29F76280DD} = {DCBDE805-D8C4-43A4-8ADC-9C29F76280DD}
+		{E8DE5C8B-5A99-4E12-9E5C-1E4BCC8FE411} = {E8DE5C8B-5A99-4E12-9E5C-1E4BCC8FE411}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FakeShader", "Orbital\FakeShader.vcxproj", "{DCBDE805-D8C4-43A4-8ADC-9C29F76280DD}"
+	ProjectSection(ProjectDependencies) = postProject
 		{E8DE5C8B-5A99-4E12-9E5C-1E4BCC8FE411} = {E8DE5C8B-5A99-4E12-9E5C-1E4BCC8FE411}
 	EndProjectSection
 EndProject
@@ -24,6 +30,10 @@ Global
 		{F276D362-8882-402E-9E68-11D6EA917AE7}.Debug|x64.Build.0 = Debug|x64
 		{F276D362-8882-402E-9E68-11D6EA917AE7}.Release|x64.ActiveCfg = Release|x64
 		{F276D362-8882-402E-9E68-11D6EA917AE7}.Release|x64.Build.0 = Release|x64
+		{DCBDE805-D8C4-43A4-8ADC-9C29F76280DD}.Debug|x64.ActiveCfg = Debug|x64
+		{DCBDE805-D8C4-43A4-8ADC-9C29F76280DD}.Debug|x64.Build.0 = Debug|x64
+		{DCBDE805-D8C4-43A4-8ADC-9C29F76280DD}.Release|x64.ActiveCfg = Release|x64
+		{DCBDE805-D8C4-43A4-8ADC-9C29F76280DD}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
