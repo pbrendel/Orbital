@@ -64,15 +64,15 @@
     <OutDir>$(ProjectDir)..\bin\lib\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
-    <LibraryPath>$(SolutionDir)bin\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Orbital\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\bin\lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(ProjectDir)..\bin\lib\</OutDir>
     <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <LibraryPath>$(SolutionDir)bin\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Orbital\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)..\bin\lib\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

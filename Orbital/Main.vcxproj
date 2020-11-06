@@ -47,16 +47,16 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(SolutionDir)bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <LibraryPath>$(SolutionDir)bin\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Orbital\;$(IncludePath)</IncludePath>
+    <OutDir>$(ProjectDir)..\bin\</OutDir>
+    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
+    <LibraryPath>$(ProjectDir)..\bin\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)bin\</OutDir>
-    <IntDir>$(SolutionDir)bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <LibraryPath>$(SolutionDir)bin\lib;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(SolutionDir)Orbital\;$(IncludePath)</IncludePath>
+    <OutDir>$(ProjectDir)..\bin\</OutDir>
+    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
+    <LibraryPath>$(ProjectDir)..\bin\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
