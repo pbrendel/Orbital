@@ -2,6 +2,8 @@
 
 #include "file.h"
 
+#include <cstdio>
+
 
 bool File_ReadBinary( const char *filename, byte **outFileData, uint *outFileSize )
 {

@@ -3,7 +3,7 @@
 #pragma once
 
 template< typename T >
-void D3D_ReadBack( ID3D11Device *d3dDevice, ID3D11Buffer *gpuBuffer, uint elementsCount, DynBuffer<T> &cpuBuffer )
+void D3D_ReadBack( ID3D11Device *d3dDevice, ID3D11Buffer *gpuBuffer, uint elementsCount, o::DynBuffer<T> &cpuBuffer )
 {
 	ID3D11DeviceContext *d3dContext = D3D_GetImmediateContext( d3dDevice );
 	ID3D11Buffer *cpuAccessBuffer = D3D_CreateCpuAccessBuffer( d3dDevice, d3dContext, gpuBuffer, true );

@@ -1,47 +1,81 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Containers">
+      <UniqueIdentifier>{1eba50fe-bdff-4c23-9278-dca35d9e7fa2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="Defs">
+      <UniqueIdentifier>{dc7b0ed0-121a-4aa4-9ff0-75b8534fda6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{56849ce7-7474-478a-8caf-7df4e2ed6718}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{c59fe849-15bf-483e-82ce-e08dec532ace}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{71a4f9b0-ec8c-4162-ae3e-988a949cb042}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core\assert.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Core\file.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>IO</Filter>
     </ClCompile>
     <ClCompile Include="Core\perfCounter.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\assert.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Core\dataWriter.h">
+      <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\file.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Core\deque.h">
+      <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\memUtils.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Core\dynArray.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\dynBuffer.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\map.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ptr.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\set.h">
+      <Filter>Containers</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\defs.h">
+      <Filter>Defs</Filter>
     </ClInclude>
     <ClInclude Include="Core\types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\utils.h">
-      <Filter>Header Files</Filter>
+      <Filter>Defs</Filter>
     </ClInclude>
     <ClInclude Include="Core\vecTypes.h">
-      <Filter>Header Files</Filter>
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\math.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\memUtils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\perfCounter.h">
-      <Filter>Header Files</Filter>
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\utils.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\assert.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\file.h">
+      <Filter>IO</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

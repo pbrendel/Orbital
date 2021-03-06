@@ -17,9 +17,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\assert.h" />
+    <ClInclude Include="Core\dataWriter.h" />
+    <ClInclude Include="Core\defs.h" />
+    <ClInclude Include="Core\deque.h" />
+    <ClInclude Include="Core\dynArray.h" />
+    <ClInclude Include="Core\dynBuffer.h" />
     <ClInclude Include="Core\file.h" />
+    <ClInclude Include="Core\map.h" />
+    <ClInclude Include="Core\math.h" />
     <ClInclude Include="Core\memUtils.h" />
     <ClInclude Include="Core\perfCounter.h" />
+    <ClInclude Include="Core\ptr.h" />
+    <ClInclude Include="Core\set.h" />
     <ClInclude Include="Core\types.h" />
     <ClInclude Include="Core\utils.h" />
     <ClInclude Include="Core\vecTypes.h" />

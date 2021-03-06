@@ -4,7 +4,7 @@
 
 #include "d3dHelpers.h"
 #include "Core/types.h"
-#include "Core/memUtils.h"
+#include "Core/dynBuffer.h"
 
 #include <d3d11.h>
 
@@ -28,7 +28,7 @@ ID3D11ShaderResourceView *D3D_CreateTextureSRV( ID3D11Device *device, ID3D11Text
 void D3D_UpdateConstantBuffer( ID3D11DeviceContext *context, ID3D11Buffer *buffer, void *data );
 ID3D11SamplerState *D3D_CreatePointClampSampler( ID3D11Device* device );
 template< typename T >
-void D3D_ReadBack( ID3D11Device *d3dDevice, ID3D11Buffer *gpuBuffer, uint elementsCount, DynBuffer<T> &cpuBuffer );
+void D3D_ReadBack( ID3D11Device *d3dDevice, ID3D11Buffer *gpuBuffer, uint elementsCount, o::DynBuffer<T> &cpuBuffer );
 
 //////////////////////////////////////////////////////////////////////////
 

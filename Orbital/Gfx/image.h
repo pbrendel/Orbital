@@ -3,13 +3,13 @@
 #pragma once
 
 #include "Core/types.h"
-#include "Core/memUtils.h"
+#include "Core/dynBuffer.h"
 
 
 #define DEBUG_IMAGE				1
 #define MAX_IMAGE_NAME_SIZE		256
 
-typedef DynBuffer<byte>	ImageData;
+typedef o::DynBuffer<byte>	ImageData;
 
 struct Image
 {
