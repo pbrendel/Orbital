@@ -28,6 +28,9 @@ public:
 	constexpr uint GetSize() const { return m_size; }
 	constexpr uint GetDataSize() const { return m_size * sizeof( T ); }
 
+	void Clear() { memset( m_ptr.get(), 0, m_size * sizeof( T ) ); }
+	void Clear( const T &val ) { std::fill_n( m_ptr.get(), m_size, val ); }
+
 	template< typename U = T >
 	U *Get() { return reinterpret_cast<U *>( m_ptr.get() ); }
 	template< typename U = T >

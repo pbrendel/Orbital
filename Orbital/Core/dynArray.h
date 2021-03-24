@@ -33,6 +33,7 @@ public:
 	bool IsEmpty() const { return m_data.empty(); }
 
 	void Clear() { m_data.clear(); }
+	void Reserve( uint capacity ) { m_data.reserve( capacity ); }
 	void Resize( uint size ) { m_data.resize( size ); }
 	void PushBack( const T &elem ) { m_data.push_back( elem ); }
 	void PushBack( T &&elem ) {	m_data.push_back( std::move( elem ) ); }

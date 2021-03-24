@@ -29,3 +29,15 @@ constexpr bool IsPow2( uint i )
 {
 	return ( i != 0 && ( i & ( i - 1 ) ) == 0 );
 }
+
+
+constexpr uint Log2( uint i )
+{
+	return ( ( i < 2 ) ? 0 : 1 + Log2( i / 2 ) );
+}
+
+
+constexpr uint BlockCount( uint i, uint blockSize )
+{
+	return ( i + blockSize - 1 ) / blockSize;
+}
