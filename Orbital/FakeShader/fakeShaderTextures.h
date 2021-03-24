@@ -85,7 +85,10 @@ public:
 		return texture_utils::Converter<T>::Convert( &m_data[offset], m_bytesPerPixel / m_channelsCount, m_floatData );
 	}
 
-	const byte *GetData() const { return m_data; }
+	constexpr const byte *GetData() const { return m_data; }
+	constexpr uint GetWidth() const { return m_width; }
+	constexpr uint GetHeight() const { return m_height; }
+	constexpr uint GetBytesPerPixel() const { return m_bytesPerPixel; }
 
 private:
 

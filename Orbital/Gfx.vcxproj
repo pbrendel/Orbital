@@ -18,7 +18,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gfx\d3d.h" />
-    <ClInclude Include="Gfx\d3d.hpp" />
     <ClInclude Include="Gfx\d3dHelpers.h" />
     <ClInclude Include="Gfx\d3dPerfCounter.h" />
     <ClInclude Include="Gfx\image.h" />

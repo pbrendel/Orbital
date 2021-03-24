@@ -20,6 +20,13 @@ public:
 		m_buffer = buffer;
 	}
 
+	void SetRawBuffer( void *buffer )
+	{
+		m_buffer = reinterpret_cast<byte *>( buffer );
+	}
+
+	constexpr const void *GetData() const { return m_buffer; }
+
 	uint Load( uint index ) const
 	{
 		return *reinterpret_cast<const uint *>( &m_buffer[index] );
@@ -99,6 +106,13 @@ public:
 	{
 		m_buffer = buffer;
 	}
+
+	void SetRawBuffer( void *buffer )
+	{
+		m_buffer = reinterpret_cast<T *>( buffer );
+	}
+
+	constexpr const void *GetData() const { return m_buffer; }
 
 	const T& operator[]( uint index ) const
 	{

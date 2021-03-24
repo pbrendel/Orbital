@@ -24,8 +24,9 @@ public:
 	inline void Reset( uint size );
 	inline void Reset( T *ptr, uint size );
 
-	bool IsEmpty() const { return m_size == 0; }
-	uint GetSize() const { return m_size; }
+	constexpr bool IsEmpty() const { return m_size == 0; }
+	constexpr uint GetSize() const { return m_size; }
+	constexpr uint GetDataSize() const { return m_size * sizeof( T ); }
 
 	template< typename U = T >
 	U *Get() { return reinterpret_cast<U *>( m_ptr.get() ); }

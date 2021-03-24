@@ -29,9 +29,6 @@
     <ClInclude Include="Gfx\d3d.h">
       <Filter>D3D</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\d3d.hpp">
-      <Filter>D3D</Filter>
-    </ClInclude>
     <ClInclude Include="Gfx\d3dHelpers.h">
       <Filter>D3D</Filter>
     </ClInclude>
