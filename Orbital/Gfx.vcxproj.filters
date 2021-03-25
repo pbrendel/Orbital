@@ -24,6 +24,9 @@
     <ClCompile Include="Gfx\shaderCache.cpp">
       <Filter>ShaderCache</Filter>
     </ClCompile>
+    <ClCompile Include="Gfx\pixelFormat.cpp">
+      <Filter>Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Gfx\d3d.h">
@@ -40,6 +43,9 @@
     </ClInclude>
     <ClInclude Include="Gfx\shaderCache.h">
       <Filter>ShaderCache</Filter>
+    </ClInclude>
+    <ClInclude Include="Gfx\pixelFormat.h">
+      <Filter>Data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

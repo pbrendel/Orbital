@@ -9,22 +9,38 @@
 #define DEBUG_IMAGE				1
 #define MAX_IMAGE_NAME_SIZE		256
 
-typedef o::DynBuffer<byte>	ImageData;
-
-struct Image
+class Image
 {
+public:
+
+	typedef o::DynBuffer<byte> Data;
+
+	Image();
+	Image( Image &&other );
+	Image &operator=( Image &&other );
+
+	operator bool() const { return !m_data.IsEmpty(); }
+
+	constexpr uint GetWidth() const { return m_width; }
+	constexpr uint GetHeight() const { return m_height; }
+	constexpr uint GetPixelFormat() const { return m_pixelFormat; }
+	constexpr bool GetDataSize() const { return m_data.GetSize(); }
+	byte *GetData() { return m_data.Get(); }
+	const byte *GetData() const { return m_data.Get(); }
+
+	static Image Create( uint width, uint height, uint pixelFormat );
+	static Image Load( const char *filename );
+	static Image Copy( const Image &srcImage );
+	static Image Convert( const Image &srcImage, uint dstPixelFormat );
+
+private:
+
 	uint m_width;
 	uint m_height;
-	byte m_channelsCount;
-	byte m_bytesPerPixel;
-	bool m_floatData;
-	ImageData m_data;
+	uint m_pixelFormat;
+	Data m_data;
 
 #if DEBUG_IMAGE
 	char m_name[MAX_IMAGE_NAME_SIZE];
 #endif // #if DEBUG_IMAGE
 };
-
-
-Image Image_Load( const char *filename );
-Image Image_Copy( const Image &srcImage );

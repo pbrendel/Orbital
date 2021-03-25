@@ -1,9 +1,11 @@
 // pbrendel (c) 2019-21
 
 #include "image.h"
+#include "pixelFormat.h"
+
+#include "Core/assert.h"
 #include "Core/file.h"
 
-#include <algorithm>
 #include <cctype>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -36,10 +38,56 @@ static ImageFileFormat Image_GetFileFormat( const char *filename )
 	return ImageFileFormat::Unknown;
 }
 
+//////////////////////////////////////////////////////////////////////////
 
-Image Image_Load( const char *filename )
+Image::Image()
+	: m_width( 0 )
+	, m_height( 0 )
+	, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
 {
-	Image loadedImage = { 0 };
+}
+
+
+Image::Image( Image &&other )
+	: m_width( other.m_width )
+	, m_height( other.m_height )
+	, m_pixelFormat( other.m_pixelFormat )
+	, m_data( std::move( other.m_data ) )
+{
+#if DEBUG_IMAGE
+	memcpy( m_name, other.m_name, MAX_IMAGE_NAME_SIZE );
+#endif // #if DEBUG_IMAGE
+}
+
+
+Image &Image::operator=( Image &&other )
+{
+	m_width = other.m_width;
+	m_height = other.m_height;
+	m_pixelFormat = other.m_pixelFormat;
+	m_data = std::move( other.m_data );
+#if DEBUG_IMAGE
+	memcpy( m_name, other.m_name, MAX_IMAGE_NAME_SIZE );
+#endif // #if DEBUG_IMAGE
+	return *this;
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+Image Image::Create( uint width, uint height, uint pixelFormat )
+{
+	Image newImage;
+	newImage.m_width = width;
+	newImage.m_height = height;
+	newImage.m_pixelFormat = pixelFormat;
+	newImage.m_data.Reset( width * height * PixelFormat_GetBytesPerPixel( pixelFormat ) );
+	return newImage;
+}
+
+
+Image Image::Load( const char *filename )
+{
+	Image loadedImage;
 
 	struct stbi_deleter
 	{
@@ -70,9 +118,7 @@ Image Image_Load( const char *filename )
 		const uint imageWidth = static_cast<uint>( roundf( sqrtf( static_cast<float>( fileSize / sizeof( float ) ) ) ) );
 		loadedImage.m_width = imageWidth;
 		loadedImage.m_height = imageWidth;
-		loadedImage.m_channelsCount = 1;
-		loadedImage.m_bytesPerPixel = 4;
-		loadedImage.m_floatData = true;
+		loadedImage.m_pixelFormat = PIXEL_FORMAT_R_FLOAT;
 		loadedImage.m_data.Reset( fileSize );
 		memcpy( loadedImage.m_data.Get(), fileData.Get(), fileSize );
 	}
@@ -92,9 +138,7 @@ Image Image_Load( const char *filename )
 
 		loadedImage.m_width = static_cast<uint>( imageWidth );
 		loadedImage.m_height = static_cast<uint>( imageWidth );
-		loadedImage.m_channelsCount = desiredChannels;
-		loadedImage.m_bytesPerPixel = desiredChannels; // stbi loads image with 8 bits for each component
-		loadedImage.m_floatData = false;
+		loadedImage.m_pixelFormat = PIXEL_FORMAT_RGBA_BYTE;	// stbi loads image with 8 bits for each component
 		const uint imageDataSize = imageWidth * imageHeight * desiredChannels;
 		loadedImage.m_data.Reset( imageDataSize );
 		memcpy( loadedImage.m_data.Get(), imageData.get(), imageDataSize );
@@ -104,22 +148,52 @@ Image Image_Load( const char *filename )
 }
 
 
-Image Image_Copy( const Image &srcImage )
+Image Image::Copy( const Image &srcImage )
 {
-	Image dstImage = { 0 };
+	Image dstImage;
 	dstImage.m_width = srcImage.m_width;
 	dstImage.m_height = srcImage.m_height;
-	dstImage.m_channelsCount = srcImage.m_channelsCount;
-	dstImage.m_bytesPerPixel = srcImage.m_bytesPerPixel;
-	dstImage.m_floatData = srcImage.m_floatData;
+	dstImage.m_pixelFormat = srcImage.m_pixelFormat;
 
 #if DEBUG_IMAGE
 	memcpy( dstImage.m_name, srcImage.m_name, MAX_IMAGE_NAME_SIZE );
 #endif // #if DEBUG_IMAGE
 
-	const uint imageDataSize = srcImage.m_width * srcImage.m_height * srcImage.m_bytesPerPixel;
+	const uint imageDataSize = srcImage.m_width * srcImage.m_height * PixelFormat_GetBytesPerPixel( srcImage.m_pixelFormat );
 	dstImage.m_data.Reset( imageDataSize );
 	memcpy( dstImage.m_data.Get(), srcImage.m_data.Get(), imageDataSize );
+
+	return dstImage;
+}
+
+
+Image Image::Convert( const Image &srcImage, uint dstPixelFormat )
+{
+	const uint pixelCount = srcImage.m_width * srcImage.m_height;
+	const uint srcBytesPerPixel = PixelFormat_GetBytesPerPixel( srcImage.m_pixelFormat );
+	const uint dstBytesPerPixel = PixelFormat_GetBytesPerPixel( dstPixelFormat );
+
+	Image dstImage;
+	dstImage.m_width = srcImage.m_width;
+	dstImage.m_height = srcImage.m_height;
+	dstImage.m_pixelFormat = dstPixelFormat;
+	dstImage.m_data.Reset( pixelCount * dstBytesPerPixel );
+#if DEBUG_IMAGE
+	memcpy( dstImage.m_name, srcImage.m_name, MAX_IMAGE_NAME_SIZE );
+#endif // #if DEBUG_IMAGE
+
+	const byte *srcData = srcImage.m_data.Get();
+	byte *dstData = dstImage.m_data.Get();
+
+	PixelFormatConverter converter = PixelFormat_GetConverter( srcImage.m_pixelFormat, dstImage.m_pixelFormat );
+	uint srcOffset = 0;
+	uint dstOffset = 0;
+	for ( uint i = 0; i < pixelCount; ++i )
+	{
+		converter( srcData + srcOffset, dstData + dstOffset );
+		srcOffset += srcBytesPerPixel;
+		dstOffset += dstBytesPerPixel;
+	}
 
 	return dstImage;
 }

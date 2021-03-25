@@ -211,7 +211,7 @@ public:
 
 	FsId CreateTextureSRV( const Texture2D<float> &tex )
 	{
-		D3DTexture2D d3dTex = D3D_CreateTexture( m_device, tex.GetData(), tex.GetWidth(), tex.GetHeight(), tex.GetBytesPerPixel() );
+		D3DTexture2D d3dTex = D3D_CreateTexture( m_device, tex.GetData(), tex.GetWidth(), tex.GetHeight(), PixelFormat_GetBytesPerPixel( tex.GetPixelFormat() ) );
 		D3DSRV d3dSrv = D3D_CreateTextureSRV( m_device, d3dTex );
 		m_textures.PushBack( std::move( d3dTex ) );
 		m_srv.PushBack( std::move( d3dSrv ) );

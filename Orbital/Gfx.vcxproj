@@ -14,6 +14,7 @@
     <ClCompile Include="Gfx\d3d.cpp" />
     <ClCompile Include="Gfx\d3dPerfCounter.cpp" />
     <ClCompile Include="Gfx\image.cpp" />
+    <ClCompile Include="Gfx\pixelFormat.cpp" />
     <ClCompile Include="Gfx\shaderCache.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -21,6 +22,7 @@
     <ClInclude Include="Gfx\d3dHelpers.h" />
     <ClInclude Include="Gfx\d3dPerfCounter.h" />
     <ClInclude Include="Gfx\image.h" />
+    <ClInclude Include="Gfx\pixelFormat.h" />
     <ClInclude Include="Gfx\shaderCache.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
