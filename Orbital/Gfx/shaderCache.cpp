@@ -2,19 +2,23 @@
 
 #include "shaderCache.h"
 #include "d3d.h"
+
+#include "Core/dynArray.h"
 #include "Core/file.h"
+#include "Core/map.h"
 
 #include <d3dcompiler.h>
 #include <iostream>
-#include <map>
 #include <string>
 
 //////////////////////////////////////////////////////////////////////////
 
 typedef size_t ShaderSignature;
-typedef std::map<ShaderSignature, ID3DBlob *> ShadersStorage;
+typedef o::Map<ShaderSignature, ID3DBlob *> ShadersStorage;
+typedef o::DynArray<std::string> IncludeDirectories;
 
-ShadersStorage s_storage;
+static ShadersStorage s_storage;
+static IncludeDirectories s_includeDirectories;
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -32,6 +36,17 @@ public:
 			*pBytes = fileSize;
 			return S_OK;
 		}
+		for ( const std::string &includeDir : s_includeDirectories )
+		{
+			char path[MAX_PATH] = { 0 };
+			sprintf_s( path, "%s\\%s", includeDir.c_str(), pFileName );
+			if ( File_ReadBinary( path, &fileData, &fileSize ) )
+			{
+				*ppData = fileData;
+				*pBytes = fileSize;
+				return S_OK;
+			}
+		}
 		return S_FALSE;
 	}
 
@@ -44,6 +59,28 @@ public:
 };
 
 
+static void ShaderCache_InitIncludeDirectories()
+{
+	if ( !s_includeDirectories.IsEmpty() )
+	{
+		return;
+	}
+
+	std::string thisPath( __FILE__ );
+	const char *thisRelativePath = "\\Gfx\\shaderCache.cpp";
+	const char *thisDir = strstr( thisPath.c_str(), thisRelativePath );
+	assertex( thisDir != nullptr, "Fix this file relative path." );
+	s_includeDirectories.PushBack( std::string( thisPath.c_str(), thisDir - thisPath.c_str() ) );
+}
+
+
+void ShaderCache_AddIncludeDirectory( const char *dir )
+{
+	ShaderCache_InitIncludeDirectories();
+	s_includeDirectories.PushBack( dir );
+}
+
+
 static ID3DBlob *ShaderCache_Compile( const char *filename, const char *entryPoint )
 {
 	FileData fileData = File_ReadBinary( filename );
@@ -51,6 +88,8 @@ static ID3DBlob *ShaderCache_Compile( const char *filename, const char *entryPoi
 	{
 		return nullptr;
 	}
+
+	ShaderCache_InitIncludeDirectories();
 
 #if D3D_DEBUG
 	const UINT flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;

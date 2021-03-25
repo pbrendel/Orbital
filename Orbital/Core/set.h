@@ -64,3 +64,35 @@ inline Set<T> &Set<T>::operator=( Set &&other )
 }
 
 } // namespace o
+
+namespace std
+{
+
+template< typename T >
+inline typename o::Set<T>::Iterator begin( o::Set<T> &set )
+{
+	return set.Begin();
+}
+
+
+template< typename T >
+inline typename o::Set<T>::Iterator end( o::Set<T> &set )
+{
+	return set.End();
+}
+
+
+template< typename T >
+inline typename o::Set<T>::ConstIterator begin( const o::Set<T> &set )
+{
+	return set.Begin();
+}
+
+
+template< typename T >
+inline typename o::Set<T>::ConstIterator end( const o::Set<T> &set )
+{
+	return set.End();
+}
+
+} // namespace std

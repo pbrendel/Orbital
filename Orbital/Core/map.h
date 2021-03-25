@@ -67,3 +67,35 @@ inline Map<K, V> &Map<K, V>::operator=( Map &&other )
 }
 
 } // namespace o
+
+namespace std
+{
+
+template< typename K, typename V>
+inline typename o::Map<K, V>::Iterator begin( o::Map<K, V> &map )
+{
+	return map.Begin();
+}
+
+
+template< typename K, typename V>
+inline typename o::Map<K, V>::Iterator end( o::Map<K, V> &map )
+{
+	return map.End();
+}
+
+
+template< typename K, typename V>
+inline typename o::Map<K, V>::ConstIterator begin( const o::Map<K, V> &map )
+{
+	return map.Begin();
+}
+
+
+template< typename K, typename V>
+inline typename o::Map<K, V>::ConstIterator end( const o::Map<K, V> &map )
+{
+	return map.End();
+}
+
+} // namespace std

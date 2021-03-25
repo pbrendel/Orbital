@@ -77,6 +77,9 @@ inline DynArray<T> &DynArray<T>::operator=( DynArray &&other )
 
 } // namespace o
 
+namespace std
+{
+
 template< typename T >
 inline typename o::DynArray<T>::Iterator begin( o::DynArray<T> &arr )
 {
@@ -103,3 +106,5 @@ inline typename o::DynArray<T>::ConstIterator end( const o::DynArray<T> &arr )
 {
 	return arr.End();
 }
+
+} // namespace std

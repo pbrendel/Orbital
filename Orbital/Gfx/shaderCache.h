@@ -8,5 +8,6 @@
 
 
 ID3DBlob *ShaderCache_Get( const char *filename, const char *entryPoint );
+void ShaderCache_AddIncludeDirectory( const char *dir );
 void ShaderCache_Shutdown();
 
