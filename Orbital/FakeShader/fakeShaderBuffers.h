@@ -20,7 +20,7 @@ public:
 		m_buffer = buffer;
 	}
 
-	void SetRawBuffer( void *buffer )
+	void ResetRaw( void *buffer )
 	{
 		m_buffer = reinterpret_cast<byte *>( buffer );
 	}
@@ -107,7 +107,7 @@ public:
 		m_buffer = buffer;
 	}
 
-	void SetRawBuffer( void *buffer )
+	void ResetRaw( void *buffer )
 	{
 		m_buffer = reinterpret_cast<T *>( buffer );
 	}

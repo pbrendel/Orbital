@@ -2,11 +2,15 @@
 
 #pragma once
 
+#include "orbital.h"
+
 #include "fakeShaderSyntax.h"
 #include "fakeShaderBuffers.h"
 #include "fakeShaderTextures.h"
 
 #include <functional>
+
+class Image;
 
 
 #define FAKE_SHADER 1
@@ -25,47 +29,62 @@ struct FsCbDesc
 
 struct FsSrvDesc
 {
+	typedef Texture2D<uint>			Texture2DCommon;
+	typedef Texture2DArray<uint>	Texture2DArrayCommon;
+	typedef StructuredBuffer<uint>	StructuredBufferCommon;
+
 	enum : uint
 	{
+		SRV_TYPE_UNKNOWN,
 		SRV_TYPE_TEXTURE_2D,
+		SRV_TYPE_TEXTURE_2D_ARRAY,
 		SRV_TYPE_RAW_BUFFER,
 		SRV_TYPE_STRUCTURED_BUFFER,
-		SRV_TYPE_UNKNOWN,
 	};
 
 	FsSrvDesc()
 		: m_data( nullptr )
 		, m_type( SRV_TYPE_UNKNOWN )
-	{
-	}
+		, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
+	{}
 
-	FsSrvDesc( Texture2D<float> &tex )
-		: m_tex( &tex )
+	template< typename T >
+	FsSrvDesc( Texture2D<T> &tex )
+		: m_texture( As<Texture2DCommon>( &tex ) )
 		, m_type( SRV_TYPE_TEXTURE_2D )
-	{
-	}
+		, m_pixelFormat( TypeToPixelFormat<T>::Value )
+	{}
+
+	template< typename T >
+	FsSrvDesc( Texture2DArray<T> &texArr )
+		: m_textureArray( As<Texture2DArrayCommon>( &texArr ) )
+		, m_type( SRV_TYPE_TEXTURE_2D_ARRAY )
+		, m_pixelFormat( TypeToPixelFormat<T>::Value )
+	{}
 
 	FsSrvDesc( ByteAddressBuffer &buffer )
 		: m_rawBuffer( &buffer )
 		, m_type( SRV_TYPE_RAW_BUFFER )
-	{
-	}
+		, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
+	{}
 
 	template< typename T >
 	FsSrvDesc( StructuredBuffer<T> &buffer )
-		: m_structuredBuffer( reinterpret_cast<StructuredBuffer<uint> >( &buffer ) )
+		: m_structuredBuffer( As<StructuredBufferCommon>( &buffer ) )
 		, m_type( SRV_TYPE_STRUCTURED_BUFFER )
-	{
-	}
+		, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
+	{}
 
 	union
 	{
 		void *m_data;
-		Texture2D<float> *m_tex;
+		Texture2DCommon *m_texture;
+		Texture2DArrayCommon *m_textureArray;
 		ByteAddressBuffer *m_rawBuffer;
-		StructuredBuffer<uint> *m_structuredBuffer;
+		StructuredBufferCommon *m_structuredBuffer;
 	};
 	uint m_type;
+	uint m_pixelFormat;
 };
 
 
@@ -73,39 +92,60 @@ struct FsUavDesc
 {
 	enum : uint
 	{
+		UAV_TYPE_UNKNOWN,
+		UAV_TYPE_TEXTURE_2D,
+		UAV_TYPE_TEXTURE_2D_ARRAY,
 		UAV_TYPE_RAW_BUFFER,
 		UAV_TYPE_STRUCTURED_BUFFER,
-		UAV_TYPE_UNKNOWN,
 	};
 
-	typedef RWStructuredBuffer<uint> StructuredBufferCommon;
+	typedef Texture2D<uint>			Texture2DCommon;
+	typedef Texture2DArray<uint>	Texture2DArrayCommon;
+	typedef StructuredBuffer<uint>	StructuredBufferCommon;
 
 	FsUavDesc()
 		: m_data( nullptr )
 		, m_type( UAV_TYPE_UNKNOWN )
-	{
-	}
+		, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
+	{}
+
+	template< typename T >
+	FsUavDesc( RWTexture2D<T> &tex )
+		: m_texture( As<Texture2DCommon>( &tex ) )
+		, m_type( UAV_TYPE_TEXTURE_2D )
+		, m_pixelFormat( TypeToPixelFormat<T>::Value )
+	{}
+
+	template< typename T >
+	FsUavDesc( Texture2DArray<T> &texArr )
+		: m_textureArray( As<Texture2DArrayCommon>( &texArr ) )
+		, m_type( UAV_TYPE_TEXTURE_2D_ARRAY )
+		, m_pixelFormat( TypeToPixelFormat<T>::Value )
+	{}
 
 	FsUavDesc( RWByteAddressBuffer &buffer )
 		: m_rawBuffer( &buffer )
 		, m_type( UAV_TYPE_RAW_BUFFER )
-	{
-	}
+		, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
+	{}
 
 	template< typename T >
 	FsUavDesc( RWStructuredBuffer<T> &buffer )
-		: m_structuredBuffer( reinterpret_cast<StructuredBufferCommon *>( &buffer ) )
+		: m_structuredBuffer( As<StructuredBufferCommon>( &buffer ) )
 		, m_type( UAV_TYPE_STRUCTURED_BUFFER )
-	{
-	}
+		, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
+	{}
 
 	union
 	{
 		void *m_data;
+		Texture2DCommon *m_texture;
+		Texture2DArrayCommon *m_textureArray;
 		ByteAddressBuffer *m_rawBuffer;
 		StructuredBufferCommon *m_structuredBuffer;
 	};
 	uint m_type;
+	uint m_pixelFormat;
 };
 
 
@@ -161,14 +201,15 @@ struct FsResources
 #define FAKE_SHADER_SRV_0					FsSrvDesc m_srvDesc[1] = { FsSrvDesc() };
 #define FAKE_SHADER_SRV_1( srv0 )			FsSrvDesc m_srvDesc[1] = { FsSrvDesc( srv0 ) };
 #define FAKE_SHADER_SRV_2( srv0, srv1 )		FsSrvDesc m_srvDesc[2] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ) };
+#define FAKE_SHADER_SRV_3( srv0, srv1, srv2 )	FsSrvDesc m_srvDesc[3] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ), FsSrvDesc( srv2 ) };
 
 #define FAKE_SHADER_UAV_0					FsUavDesc m_uavDesc[1] = { FsUavDesc() };
 #define FAKE_SHADER_UAV_1( uav0 )			FsUavDesc m_uavDesc[1] = { FsUavDesc( uav0 ) };
 #define FAKE_SHADER_UAV_2( uav0, uav1 )		FsUavDesc m_uavDesc[2] = { FsUavDesc( uav0 ), FsUavDesc( uav1 ) };
+#define FAKE_SHADER_UAV_3( uav0, uav1, uav2 )	FsUavDesc m_uavDesc[3] = { FsUavDesc( uav0 ), FsUavDesc( uav1 ), FsUavDesc( uav2 ) };
 
 #define FAKE_SHADER_RESOURCES( device ) ( device.GetType() == FsDevice::Type::Cpu ) ? FsResources( s_fsResDesc.m_cbDesc, s_fsResDesc.m_srvDesc, s_fsResDesc.m_uavDesc ) : FsResources();
 
-typedef std::function< void( uint3 ) > FsEntryPoint;
 
 struct FsGroupSize
 {
@@ -177,8 +218,39 @@ struct FsGroupSize
 	uint m_z;
 };
 
+
+class FsEntryPoint
+{
+public:
+
+	typedef std::function< void( const uint3 & ) > FuncThread;
+	typedef std::function< void( const uint3 &, const uint3 & ) > FuncGroupThread;
+
+	FsEntryPoint( const FsGroupSize &groupSize, FuncThread func );
+	FsEntryPoint( const FsGroupSize &groupSize, FuncGroupThread func );
+
+	constexpr const FsGroupSize &GetGroupSize() const { return m_groupSize; }
+
+	void operator()( const uint3 &groupId, const uint3 &groupThreadId ) const;
+
+private:
+
+	FsGroupSize m_groupSize;
+	FuncThread m_funcThread;
+	FuncGroupThread m_funcGroupThread;
+};
+
+
 #define FAKE_SHADER_MAIN( entryPoint, x, y, z ) FsGroupSize s_fsGroup_##entryPoint { x, y, z }; void entryPoint( const uint3 &threadID )
-#define CREATE_FAKE_SHADER( device, shaderFilename, entryPoint ) device.CreateShader( FsEntryPoint( ::entryPoint ), s_fsGroup_##entryPoint, shaderFilename, #entryPoint )
+#define FAKE_SHADER_MAIN_GROUP( entryPoint, x, y, z ) FsGroupSize s_fsGroup_##entryPoint { x, y, z }; void entryPoint( const uint3 &groupID, const uint3 &groupThreadID )
+#define CREATE_FAKE_SHADER( device, shaderFilename, entryPoint ) device.CreateShader( FsEntryPoint( s_fsGroup_##entryPoint, entryPoint ), shaderFilename, #entryPoint )
+
+#define DECLARE_FAKE_SHADER_WRAPPER( name )						\
+	namespace name												\
+	{															\
+		FsResources GetShaderResources( FsDevice &fsDevice );	\
+		FsId CreateShader( FsDevice &fsDevice );				\
+	}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -204,13 +276,13 @@ public:
 	FsId CreateConstantBuffer( const FsResources &res, uint size, void *data );
 	void UpdateConstantBuffer( FsId cbId, void *data ) const;
 
-	FsId CreateTextureSRV( const FsResources &res, const Texture2D<float> &tex );
+	FsId CreateTextureSRV( const FsResources &res, const Image &img );
 	void ApplySRV() const;
 
 	FsId CreateStructuredBufferUAV( const FsResources &res, uint elemSize, uint count, void *data );
 	void ApplyUAV() const;
 
-	FsId CreateShader( FsEntryPoint entryPointFunc, const FsGroupSize &groupSize, const char *shaderFilename, const char *entryPointName );
+	FsId CreateShader( FsEntryPoint entryPoint, const char *shaderFilename, const char *entryPointName );
 	void Dispatch( FsId shaderId, uint sizeX, uint sizeY, uint sizeZ ) const;
 
 	void ReadBack( FsId bufferId, uint dataSize, void *data ) const;
@@ -223,7 +295,7 @@ private:
 	template< typename T >
 	T *GetImpl()
 	{
-		T *impl = reinterpret_cast<T *>( m_impl );
+		T *impl = As<T>( m_impl );
 		assert( impl->IsA( m_type ) );
 		return impl;
 	}
@@ -231,7 +303,7 @@ private:
 	template< typename T >
 	const T *GetImpl() const
 	{
-		const T *impl = reinterpret_cast<const T *>( m_impl );
+		const T *impl = As<T>( m_impl );
 		assert( impl->IsA( m_type ) );
 		return impl;
 	}

@@ -30,8 +30,9 @@
     <ClInclude Include="Core\ptr.h" />
     <ClInclude Include="Core\set.h" />
     <ClInclude Include="Core\types.h" />
-    <ClInclude Include="Core\utils.h" />
-    <ClInclude Include="Core\vecTypes.h" />
+    <ClInclude Include="Core\helpers.h" />
+    <ClInclude Include="Core\vector.h" />
+    <ClInclude Include="orbital.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

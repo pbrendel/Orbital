@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/types.h"
+#include "orbital.h"
 #include "Core/dynBuffer.h"
 
 

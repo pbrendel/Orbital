@@ -3,7 +3,6 @@
 #include "image.h"
 #include "pixelFormat.h"
 
-#include "Core/assert.h"
 #include "Core/file.h"
 
 #include <cctype>

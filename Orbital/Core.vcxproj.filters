@@ -4,9 +4,6 @@
     <Filter Include="Containers">
       <UniqueIdentifier>{1eba50fe-bdff-4c23-9278-dca35d9e7fa2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Defs">
-      <UniqueIdentifier>{dc7b0ed0-121a-4aa4-9ff0-75b8534fda6a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Math">
       <UniqueIdentifier>{56849ce7-7474-478a-8caf-7df4e2ed6718}</UniqueIdentifier>
     </Filter>
@@ -15,6 +12,9 @@
     </Filter>
     <Filter Include="IO">
       <UniqueIdentifier>{71a4f9b0-ec8c-4162-ae3e-988a949cb042}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Globals">
+      <UniqueIdentifier>{dc7b0ed0-121a-4aa4-9ff0-75b8534fda6a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,13 +51,10 @@
       <Filter>Containers</Filter>
     </ClInclude>
     <ClInclude Include="Core\defs.h">
-      <Filter>Defs</Filter>
+      <Filter>Globals</Filter>
     </ClInclude>
     <ClInclude Include="Core\types.h">
-      <Filter>Defs</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\vecTypes.h">
-      <Filter>Math</Filter>
+      <Filter>Globals</Filter>
     </ClInclude>
     <ClInclude Include="Core\math.h">
       <Filter>Math</Filter>
@@ -68,14 +65,18 @@
     <ClInclude Include="Core\perfCounter.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Core\utils.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="Core\assert.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Core\file.h">
       <Filter>IO</Filter>
     </ClInclude>
+    <ClInclude Include="Core\vector.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\helpers.h">
+      <Filter>Globals</Filter>
+    </ClInclude>
+    <ClInclude Include="orbital.h" />
   </ItemGroup>
 </Project>

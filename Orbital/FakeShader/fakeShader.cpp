@@ -3,9 +3,46 @@
 #include "fakeShader.h"
 
 #include "Core/dynArray.h"
-#include "Core/utils.h"
 #include "Gfx/d3d.h"
 #include "Gfx/d3dPerfCounter.h"
+#include "Gfx/image.h"
+
+//////////////////////////////////////////////////////////////////////////
+
+FsEntryPoint::FsEntryPoint( const FsGroupSize &groupSize, FsEntryPoint::FuncThread func )
+	: m_groupSize( groupSize )
+	, m_funcThread( func )
+	, m_funcGroupThread( nullptr )
+{
+}
+
+
+FsEntryPoint::FsEntryPoint( const FsGroupSize &groupSize, FsEntryPoint::FuncGroupThread func )
+	: m_groupSize( groupSize )
+	, m_funcThread( nullptr )
+	, m_funcGroupThread( func )
+{
+}
+
+
+void FsEntryPoint::operator()( const uint3 &groupId, const uint3 &groupThreadId ) const
+{
+	if ( m_funcGroupThread )
+	{
+		m_funcGroupThread( groupId, groupThreadId );
+	}
+	else
+	{
+		const uint3 threadId(
+			groupId.x * m_groupSize.m_x + groupThreadId.x,
+			groupId.y * m_groupSize.m_y + groupThreadId.y,
+			groupId.z * m_groupSize.m_z + groupThreadId.z
+		);
+
+		assert( m_funcThread );
+		m_funcThread( threadId );
+	}
+}
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -43,11 +80,11 @@ public:
 		memcpy( m_constantBuffer, data, m_constantBufferSize );
 	}
 
-	FsId CreateTextureSRV( const FsResources &res, const Texture2D<float> &tex )
+	FsId CreateTextureSRV( const FsResources &res, const Image &img )
 	{
 		assert( m_srvCount < res.m_srvCount );
 		assert( res.m_srvDesc[m_srvCount].m_type == FsSrvDesc::SRV_TYPE_TEXTURE_2D );
-		*res.m_srvDesc[m_srvCount].m_tex = tex;
+		res.m_srvDesc[m_srvCount].m_texture->ResetRaw( img.GetData(), img.GetWidth(), img.GetHeight(), img.GetPixelFormat(), res.m_srvDesc[m_srvCount].m_pixelFormat );
 		m_srvCount++;
 		return static_cast<FsId>( m_srvCount - 1 );
 	}
@@ -65,38 +102,36 @@ public:
 			data = newData.Get();
 			m_bufferMem.PushBack( std::move( newData ) );
 		}
-		m_uavDesc[m_uavCount].m_structuredBuffer->SetRawBuffer( data );
+		m_uavDesc[m_uavCount].m_structuredBuffer->ResetRaw( data );
 		m_uavCount++;
 		return static_cast<FsId>( m_uavCount - 1 );
 	}
 
-	FsId CreateShader( FsEntryPoint entryPointFunc, const FsGroupSize &groupSize )
+	FsId CreateShader( FsEntryPoint entryPoint )
 	{
-		m_shaders.PushBack( { entryPointFunc, groupSize } );
-		return static_cast<FsId>( m_shaders.GetSize() - 1 );
+		m_shaderEntryPoints.PushBack( entryPoint );
+		return static_cast<FsId>( m_shaderEntryPoints.GetSize() - 1 );
 	}
 
 	void Dispatch( FsId shaderId, uint sizeX, uint sizeY, uint sizeZ ) const
 	{
-		Shader shader = m_shaders[static_cast<uint>( shaderId )];
-		const FsGroupSize &groupSize = shader.m_groupSize;
-		for ( uint groupZ = 0; groupZ < sizeZ; ++groupZ )
+		const FsEntryPoint &entryPoint = m_shaderEntryPoints[static_cast<uint>( shaderId )];
+		const FsGroupSize &groupSize = entryPoint.GetGroupSize();
+		uint3 groupId;
+		for ( groupId.z = 0; groupId.z < sizeZ; ++groupId.z )
 		{
-			for ( uint groupY = 0; groupY < sizeY; ++groupY )
+			for ( groupId.y = 0; groupId.y < sizeY; ++groupId.y )
 			{
-				for ( uint groupX = 0; groupX < sizeX; ++groupX )
+				for ( groupId.x = 0; groupId.x < sizeX; ++groupId.x )
 				{
-					uint3 threadId;
-					for ( uint threadZ = 0; threadZ < groupSize.m_z; ++threadZ )
+					uint3 groupThreadId;
+					for ( groupThreadId.z = 0; groupThreadId.z < groupSize.m_z; ++groupThreadId.z )
 					{
-						threadId.z = groupZ * groupSize.m_z + threadZ;
-						for ( uint threadY = 0; threadY < groupSize.m_y; ++threadY )
+						for ( groupThreadId.y = 0; groupThreadId.y < groupSize.m_y; ++groupThreadId.y )
 						{
-							threadId.y = groupY * groupSize.m_y + threadY;
-							for ( uint threadX = 0; threadX < groupSize.m_x; ++threadX )
+							for ( groupThreadId.x = 0; groupThreadId.x < groupSize.m_x; ++groupThreadId.x )
 							{
-								threadId.x = groupX * groupSize.m_x + threadX;
-								shader.m_entryPoint( threadId );
+								entryPoint( groupId, groupThreadId );
 							}
 						}
 					}
@@ -125,12 +160,6 @@ public:
 
 private:
 
-	struct Shader
-	{
-		FsEntryPoint m_entryPoint;
-		FsGroupSize m_groupSize;
-	};
-
 	void *m_constantBuffer;
 	uint m_constantBufferSize;
 
@@ -141,7 +170,7 @@ private:
 
 	o::DynArray<o::DynBuffer<byte> > m_bufferMem;
 
-	o::DynArray<Shader> m_shaders;
+	o::DynArray<FsEntryPoint> m_shaderEntryPoints;
 };
 
 #define DEVICE_CPU GetImpl<FakeShaderDeviceCpu>()
@@ -209,9 +238,9 @@ public:
 		m_context->CSSetConstantBuffers( 0, ArrayCount( constantBuffers ), constantBuffers );
 	}
 
-	FsId CreateTextureSRV( const Texture2D<float> &tex )
+	FsId CreateTextureSRV( const Image &img )
 	{
-		D3DTexture2D d3dTex = D3D_CreateTexture( m_device, tex.GetData(), tex.GetWidth(), tex.GetHeight(), PixelFormat_GetBytesPerPixel( tex.GetPixelFormat() ) );
+		D3DTexture2D d3dTex = D3D_CreateTexture( m_device, img.GetData(), img.GetWidth(), img.GetHeight(), PixelFormat_GetBytesPerPixel( img.GetPixelFormat() ) );
 		D3DSRV d3dSrv = D3D_CreateTextureSRV( m_device, d3dTex );
 		m_textures.PushBack( std::move( d3dTex ) );
 		m_srv.PushBack( std::move( d3dSrv ) );
@@ -366,11 +395,11 @@ void FsDevice::UpdateConstantBuffer( FsId cbId, void *data ) const
 }
 
 
-FsId FsDevice::CreateTextureSRV( const FsResources &res, const Texture2D<float> &tex )
+FsId FsDevice::CreateTextureSRV( const FsResources &res, const Image &img )
 {
 	return ( m_type == FsDevice::Type::Cpu )
-		? DEVICE_CPU->CreateTextureSRV( res, tex )
-		: DEVICE_GPU->CreateTextureSRV( tex );
+		? DEVICE_CPU->CreateTextureSRV( res, img )
+		: DEVICE_GPU->CreateTextureSRV( img );
 }
 
 
@@ -400,10 +429,10 @@ void FsDevice::ApplyUAV() const
 }
 
 
-FsId FsDevice::CreateShader( FsEntryPoint entryPointFunc, const FsGroupSize &groupSize, const char *shaderFilename, const char *entryPointName )
+FsId FsDevice::CreateShader( FsEntryPoint entryPoint, const char *shaderFilename, const char *entryPointName )
 {
 	return ( m_type == FsDevice::Type::Cpu )
-		? DEVICE_CPU->CreateShader( entryPointFunc, groupSize )
+		? DEVICE_CPU->CreateShader( entryPoint )
 		: DEVICE_GPU->CreateShader( shaderFilename, entryPointName );
 }
 

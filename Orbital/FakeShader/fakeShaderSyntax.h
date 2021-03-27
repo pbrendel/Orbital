@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Core/vecTypes.h"
+#include "Core/vector.h"
 
 #include <algorithm>
 
@@ -56,6 +56,12 @@ float4 min( const float4 &a, const float4 &b );
 float2 max( const float2 &a, const float2 &b );
 float3 max( const float3 &a, const float3 &b );
 float4 max( const float4 &a, const float4 &b );
+bool any( bool2 b );
+bool any( bool3 b );
+bool any( bool2 b );
+bool all( bool2 b );
+bool all( bool3 b );
+bool all( bool2 b );
 void InterlockedAdd( uint &dest, uint value );
 void InterlockedAnd( uint &dest, uint value );
 void InterlockedOr( uint &dest, uint value );

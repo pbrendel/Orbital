@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Core/types.h"
-
 #include <d3d11.h>
 
 

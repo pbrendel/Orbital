@@ -2,8 +2,6 @@
 
 #include "d3d.h"
 #include "shaderCache.h"
-#include "Core/utils.h"
-#include "Core/assert.h"
 
 
 #pragma comment(lib,"d3d11.lib")

@@ -338,6 +338,42 @@ float4 max( const float4 &a, const float4 &b )
 }
 
 
+bool any( bool2 b )
+{
+	return b.x || b.y;
+}
+
+
+bool any( bool3 b )
+{
+	return b.x || b.y || b.z;
+}
+
+
+bool any( bool4 b )
+{
+	return b.x || b.y || b.z || b.w;
+}
+
+
+bool all( bool2 b )
+{
+	return b.x && b.y;
+}
+
+
+bool all( bool3 b )
+{
+	return b.x && b.y && b.z;
+}
+
+
+bool all( bool4 b )
+{
+	return b.x && b.y && b.z && b.w;
+}
+
+
 // We're not using multithreading for fake shaders.
 void InterlockedAdd( uint &dest, uint value )
 {

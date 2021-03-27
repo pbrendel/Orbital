@@ -1,9 +1,7 @@
 // pbrendel (c) 2021
 
 #include "pixelFormat.h"
-
-#include "Core/assert.h"
-#include "Core/utils.h"
+#include "Core/math.h"
 
 
 uint PixelFormat_GetChannelsCount( uint format )

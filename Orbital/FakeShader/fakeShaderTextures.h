@@ -2,7 +2,6 @@
 
 #pragma once
 
-#include "Core/assert.h"
 #include "Gfx/pixelFormat.h"
 
 
@@ -18,20 +17,22 @@ public:
 		: m_data( nullptr )
 		, m_width( 0 )
 		, m_height( 0 )
-		, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
 		, m_bytesPerPixel( 0 )
 		, m_converter( nullptr )
-	{
-	}
+	{}
 		
-	Texture2D( const byte *data, uint width, uint height, uint pixelFormat )
-		: m_data( data )
-		, m_width( width )
-		, m_height( height )
-		, m_pixelFormat( pixelFormat )
+	void ResetRaw( const byte *data, uint width, uint height, uint dataPixelFormat, uint texturePixelFormat )
 	{
-		m_bytesPerPixel = PixelFormat_GetBytesPerPixel( m_pixelFormat );
-		m_converter = PixelFormat_GetConverter( m_pixelFormat, TypeToPixelFormat<T>::Value );
+		m_data = const_cast<byte *>( data );
+		m_width = width;
+		m_height = height;
+		m_bytesPerPixel = PixelFormat_GetBytesPerPixel( dataPixelFormat );
+		m_converter = PixelFormat_GetConverter( dataPixelFormat, texturePixelFormat );
+	}
+
+	void Reset( const byte *data, uint width, uint height, uint dataPixelFormat )
+	{
+		ResetRaw( data, width, height, dataPixelFormat, TypeToPixelFormat<T>::Value );
 	}
 
 	T SampleLevel( uint samplerId, float2 uv, uint level ) const
@@ -56,14 +57,12 @@ public:
 	constexpr const byte *GetData() const { return m_data; }
 	constexpr uint GetWidth() const { return m_width; }
 	constexpr uint GetHeight() const { return m_height; }
-	constexpr uint GetPixelFormat() const { return m_pixelFormat; }
 
 protected:
 
-	const byte *m_data;
+	byte *m_data;
 	uint m_width;
 	uint m_height;
-	uint m_pixelFormat;
 	uint m_bytesPerPixel;
 	PixelFormatConverter m_converter;
 };
@@ -75,21 +74,22 @@ class RWTexture2D : public Texture2D<T>
 {
 public:
 
-	RWTexture2D()
-		: Texture2D()
+	void ResetRaw( const byte *data, uint width, uint height, uint dataPixelFormat, uint texturePixelFormat )
 	{
+		assertex( dataPixelFormat == texturePixelFormat, "RWTexture2D internal data format must match texture type." );
+		Texture2D<T>::ResetRaw( data, width, height, dataPixelFormat, texturePixelFormat );
 	}
 
-	RWTexture2D( const byte *data, uint width, uint height, uint pixelFormat )
-		: Texture2D( data, width, height, pixelFormat )
+	void ResetRaw( const byte *data, uint width, uint height, uint dataPixelFormat )
 	{
-		assertex( this->m_pixelFormat == TypeToPixelFormat<T>::Value, "RWTexture2D internal data format must match texture type." );
+		assertex( dataPixelFormat == TypeToPixelFormat<T>::Value, "RWTexture2D internal data format must match texture type." );
+		Texture2D<T>::Reset( data, width, height, dataPixelFormat );
 	}
 
 	T &operator[]( uint2 index )
 	{
 		const uint offset = ( index.x + index.y *this->m_width ) * this->m_bytesPerPixel;
-		return *reinterpret_cast<T *>( const_cast<byte *>( &this->m_data[offset] ) );
+		return *As<T>( &this->m_data[offset] );
 	}
 };
 
@@ -105,26 +105,29 @@ public:
 		, m_width( 0 )
 		, m_height( 0 )
 		, m_depth( 0 )
-		, m_pixelFormat( PIXEL_FORMAT_UNKNOWN )
 		, m_bytesPerPixel( 0 )
 		, m_converter( nullptr )
+	{}
+
+	void ResetRaw( const byte *data, uint width, uint height, uint depth, uint dataPixelFormat, uint texturePixelFormat )
 	{
+		m_data = const_cast<byte *>( data );
+		m_width = width;
+		m_height = height;
+		m_depth = depth;
+		m_bytesPerPixel = PixelFormat_GetBytesPerPixel( dataPixelFormat );
+		m_converter = PixelFormat_GetConverter( dataPixelFormat, texturePixelFormat );
 	}
 
-	Texture2DArray( const byte *data, uint width, uint height, uint depth, uint pixelFormat )
-		: m_data( data )
-		, m_width( width )
-		, m_height( height )
-		, m_pixelFormat( pixelFormat )
+	void Reset( const byte *data, uint width, uint height, uint depth, uint dataPixelFormat )
 	{
-		m_bytesPerPixel = PixelFormat_GetBytesPerPixel( m_pixelFormat );
-		m_converter = PixelFormat_GetConverter( m_pixelFormat, TypeToPixelFormat<T>::Value );
+		ResetRaw( data, width, height, depth, dataPixelFormat, TypeToPixelFormat<T>::Value );
 	}
 
 	T operator[]( uint3 index ) const
 	{
 		const uint offset = ( index.x + index.y + ( index.z * m_height ) * m_width ) * m_bytesPerPixel;
-		float val = 0.0f;
+		T val;
 		m_converter( &m_data[offset], &val );
 		return val;
 	}
@@ -133,15 +136,13 @@ public:
 	constexpr uint GetWidth() const { return m_width; }
 	constexpr uint GetHeight() const { return m_height; }
 	constexpr uint GetDepth() const { return m_depth; }
-	constexpr uint GetPixelFormat() const { return m_pixelFormat; }
 
 protected:
 
-	const byte *m_data;
+	byte *m_data;
 	uint m_width;
 	uint m_height;
 	uint m_depth;
-	uint m_pixelFormat;
 	uint m_bytesPerPixel;
 	PixelFormatConverter m_converter;
 };
@@ -153,20 +154,21 @@ class RWTexture2DArray : public Texture2DArray<T>
 {
 public:
 
-	RWTexture2DArray()
-		: Texture2DArray()
+	void ResetRaw( const byte *data, uint width, uint height, uint depth, uint dataPixelFormat, uint texturePixelFormat )
 	{
+		assertex( dataPixelFormat == texturePixelFormat, "RWTexture2DArray internal data format must match texture type." );
+		Texture2DArray<T>::ResetRaw( data, width, height, depth, dataPixelFormat, texturePixelFormat );
 	}
 
-	RWTexture2DArray( const byte *data, uint width, uint height, uint depth, uint pixelFormat )
-		: Texture2DArray( data, width, height, depth, pixelFormat )
+	void Reset( const byte *data, uint width, uint height, uint depth, uint dataPixelFormat )
 	{
-		assertex( this->m_pixelFormat == TypeToPixelFormat<T>::Value, "RWTexture2DArray internal data format must match texture type." );
+		assertex( dataPixelFormat == TypeToPixelFormat<T>::Value, "RWTexture2DArray internal data format must match texture type." );
+		Texture2DArray<T>::Reset( data, width, height, depth, dataPixelFormat );
 	}
 
 	T &operator[]( uint3 index )
 	{
 		const uint offset = ( index.x + index.y + ( index.z * this->m_height ) * this->m_width ) * this->m_bytesPerPixel;
-		return *reinterpret_cast<T *>( const_cast<byte *>( &this->m_data[offset] ) );
+		return *As<T>( &this->m_data[offset] );
 	}
 };

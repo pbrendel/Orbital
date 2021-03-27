@@ -2,8 +2,9 @@
 
 #pragma once
 
+#include "orbital.h"
+
 #include "d3dHelpers.h"
-#include "Core/types.h"
 #include "Core/dynBuffer.h"
 
 #include <d3d11.h>

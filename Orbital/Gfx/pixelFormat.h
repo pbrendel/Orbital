@@ -2,8 +2,8 @@
 
 #pragma once
 
-#include "Core/types.h"
-#include "Core/vecTypes.h"
+#include "orbital.h"
+#include "Core/vector.h"
 
 #include <functional>
 

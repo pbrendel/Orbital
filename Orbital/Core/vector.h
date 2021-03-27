@@ -5,297 +5,162 @@
 #include "types.h"
 
 
-struct uint2
+template< typename T >
+struct vec2
 {
-	uint x;
-	uint y;
+	T x;
+	T y;
 
-	inline explicit uint2( uint _x = 0, uint _y = 0 )
+	inline explicit vec2( T _x = T( 0 ), T _y = T( 0 ) )
 		: x( _x )
 		, y( _y )
 	{}
 
-	inline uint &operator[]( uint index )
+	template< typename U >
+	inline vec2( const vec2<U> &v )
+	{
+		x = static_cast<T>( v.x );
+		y = static_cast<T>( v.y );
+	}
+
+	inline T &operator[]( uint index )
 	{
 		return *( &this->x + index );
 	}
 };
 
 
-union uint3
+template< typename T >
+union vec3
 {
 	struct
 	{
-		uint x;
-		uint y;
-		uint z;
+		T x;
+		T y;
+		T z;
 	};
 	struct
 	{
-		uint2 xy;
-		uint z1;
+		vec2<T> xy;
+		T z1;
 	};
 
-	inline explicit uint3( uint _x = 0, uint _y = 0, uint _z = 0 )
+	inline explicit vec3( T _x = T( 0 ), T _y = T( 0 ), T _z = T( 0 ) )
 		: x( _x )
 		, y( _y )
 		, z( _z )
 	{}
 
-	inline uint3( uint2 _xy, uint _z )
+	inline vec3( const vec2<T> &_xy, T _z )
 		: xy( _xy )
 		, z1( _z )
 	{}
 
-	inline uint &operator[]( uint index )
+	inline T &operator[]( uint index )
 	{
 		return *( &this->x + index );
 	}
 };
 
 
-union uint4
+template< typename T >
+union vec4
 {
 	struct
 	{
-		uint x;
-		uint y;
-		uint z;
-		uint w;
+		T x;
+		T y;
+		T z;
+		T w;
 	};
 	struct
 	{
-		uint3 xyz;
-		uint w1;
+		vec3<T> xyz;
+		T w1;
 	};
 	struct
 	{
-		uint2 xy;
-		uint2 zw;
+		vec2<T> xy;
+		vec2<T> zw;
 	};
 
-	inline explicit uint4( uint _x = 0, uint _y = 0, uint _z = 0, uint _w = 0 )
+	inline explicit vec4( T _x = T( 0 ), T _y = T( 0 ), T _z = T( 0 ), T _w = T( 0 ) )
 		: x( _x )
 		, y( _y )
 		, z( _z )
 		, w( _w )
 	{}
 
-	inline uint4( uint3 _xyz, uint _w )
+	inline vec4( const vec3<T> &_xyz, T _w )
 		: xyz( _xyz )
 		, w1( _w )
 	{}
 
-	inline uint4( uint2 _xy, uint _zw )
+	inline vec4( const vec2<T> &_xy, const vec2<T> &_zw )
 		: xy( _xy )
 		, zw( _zw )
 	{}
 
-	inline uint &operator[]( uint index )
-	{
-		return *( &this->x + index );
-	}
-};
-
-
-struct float2
-{
-	float x;
-	float y;
-
-	inline explicit float2( float _x = 0.0f, float _y = 0.0f )
-		: x( _x )
-		, y( _y )
-	{}
-
-	inline float2( uint2 i )
-		: x( static_cast<float>( i.x ) )
-		, y( static_cast<float>( i.y ) )
-	{}
-
-	inline operator uint2()
-	{
-		return uint2( static_cast< uint >( x ), static_cast< uint >( y ) );
-	}
-
-	inline float &operator[]( uint index )
-	{
-		return *( &this->x + index );
-	}
-};
-
-
-union float3
-{
-	struct
-	{
-		float x;
-		float y;
-		float z;
-	};
-	struct
-	{
-		float2 xy;
-		float z1;
-	};
-
-	inline explicit float3( float _x = 0.0f, float _y = 0.0f, float _z = 0.0f )
-		: x( _x )
-		, y( _y )
-		, z( _z )
-	{}
-
-	inline float3( float2 _xy, float _z )
+	inline vec4( const vec2<T> &_xy, float _z, float _w )
 		: xy( _xy )
-		, z1( _z )
+		, zw( vec2<T>( _z, _w ) )
 	{}
 
-	inline float3( uint3 i )
-		: x( static_cast<float>( i.x ) )
-		, y( static_cast<float>( i.y ) )
-		, z( static_cast<float>( i.z ) )
-	{}
-
-	inline operator uint3()
-	{
-		return uint3( static_cast<uint>( x ), static_cast<uint>( y ), static_cast<uint>( z ) );
-	}
-
-	inline float &operator[]( uint index )
+	inline T &operator[]( uint index )
 	{
 		return *( &this->x + index );
 	}
 };
 
 
-union float4
-{
-	struct
-	{
-		float x;
-		float y;
-		float z;
-		float w;
-	};
-	struct
-	{
-		float3 xyz;
-		float w1;
-	};
-	struct
-	{
-		float2 xy;
-		float2 zw;
-	};
-
-	inline explicit float4( float _x = 0.0f, float _y = 0.0f, float _z = 0.0f, float _w = 0.0f )
-		: x( _x )
-		, y( _y )
-		, z( _z )
-		, w( _w )
-	{}
-
-	inline float4( float3 _xyz, float _w )
-		: xyz( _xyz )
-		, w1( _w )
-	{}
-
-	inline float4( float2 _xy, float _zw )
-		: xy( _xy )
-		, zw( _zw )
-	{}
-
-	inline float4( float2 _xy, float _z, float _w )
-		: xy( _xy )
-		, zw( float2( _z, _w ) )
-	{}
-
-	inline float4( uint4 i )
-		: x( static_cast<float>( i.x ) )
-		, y( static_cast<float>( i.y ) )
-		, z( static_cast<float>( i.z ) )
-		, w( static_cast<float>( i.w ) )
-	{}
-
-	inline operator uint4()
-	{
-		return uint4( static_cast<uint>( x ), static_cast<uint>( y ), static_cast<uint>( z ), static_cast<uint>( w ) );
-	}
-
-	inline float &operator[]( uint index )
-	{
-		return *( &this->x + index );
-	}
-};
+typedef vec2<uint> uint2;
+typedef vec3<uint> uint3;
+typedef vec4<uint> uint4;
+typedef vec2<float> float2;
+typedef vec3<float> float3;
+typedef vec4<float> float4;
+typedef vec2<byte> bool2;
+typedef vec3<byte> bool3;
+typedef vec4<byte> bool4;
 
 
-inline bool operator==( const float4 &a, const float4 &b )
+template< typename T >
+inline bool operator==( const vec4<T> &a, const vec4<T> &b )
 {
 	return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
 }
 
 
-inline bool operator==( const float3 &a, const float3 &b )
+template< typename T >
+inline bool operator==( const vec3<T> &a, const vec3<T> &b )
 {
 	return a.x == b.x && a.y == b.y && a.z == b.z;
 }
 
 
-inline bool operator==( const float2 &a, const float2 &b )
+template< typename T >
+inline bool operator==( const vec2<T> &a, const vec2<T> &b )
 {
 	return a.x == b.x && a.y == b.y;
 }
 
 
-inline bool operator!=( const float4 &a, const float4 &b )
+template< typename T >
+inline bool operator!=( const vec4<T> &a, const vec4<T> &b )
 {
 	return !( a == b );
 }
 
 
-inline bool operator!=( const float3 &a, const float3 &b )
+template< typename T >
+inline bool operator!=( const vec3<T> &a, const vec3<T> &b )
 {
 	return !( a == b );
 }
 
 
-inline bool operator!=( const float2 &a, const float2 &b )
-{
-	return !( a == b );
-}
-
-
-inline bool operator==( const uint4 &a, const uint4 &b )
-{
-	return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
-}
-
-
-inline bool operator==( const uint3 &a, const uint3 &b )
-{
-	return a.x == b.x && a.y == b.y && a.z == b.z;
-}
-
-
-inline bool operator==( const uint2 &a, const uint2 &b )
-{
-	return a.x == b.x && a.y == b.y;
-}
-
-
-inline bool operator!=( const uint4 &a, const uint4 &b )
-{
-	return !( a == b );
-}
-
-
-inline bool operator!=( const uint3 &a, const uint3 &b )
-{
-	return !( a == b );
-}
-
-
-inline bool operator!=( const uint2 &a, const uint2 &b )
+template< typename T >
+inline bool operator!=( const vec2<T> &a, const vec2<T> &b )
 {
 	return !( a == b );
 }
@@ -319,6 +184,9 @@ inline bool operator!=( const uint2 &a, const uint2 &b )
 #define IMPLEMENT_VEC_UNARY_OPERATOR_4( type, op ) inline type operator##op( const type &v ) { return type( op v.x, op v.y, op v.z, op v.w ); }
 #define IMPLEMENT_VEC_UNARY_OPERATOR_3( type, op ) inline type operator##op( const type &v ) { return type( op v.x, op v.y, op v.z ); }
 #define IMPLEMENT_VEC_UNARY_OPERATOR_2( type, op ) inline type operator##op( const type &v ) { return type( op v.x, op v.y ); }
+#define IMPLEMENT_VEC_REL_OPERATOR_4( type, op ) inline bool4 operator##op( const type &a, const type &b ) { return bool4( a.x op b.x ? 1 : 0, a.y op b.y ? 1 : 0, a.z op b.z ? 1 : 0, a.w op b.w ? 1 : 0 ); }
+#define IMPLEMENT_VEC_REL_OPERATOR_3( type, op ) inline bool3 operator##op( const type &a, const type &b ) { return bool3( a.x op b.x ? 1 : 0, a.y op b.y ? 1 : 0, a.z op b.z ? 1 : 0 ); }
+#define IMPLEMENT_VEC_REL_OPERATOR_2( type, op ) inline bool2 operator##op( const type &a, const type &b ) { return bool2( a.x op b.x ? 1 : 0, a.y op b.y ? 1 : 0 ); }
 
 IMPLEMENT_VEC_VEC_OPERATOR_4( uint4, + );
 IMPLEMENT_VEC_VEC_OPERATOR_4( uint4, - );
@@ -337,6 +205,10 @@ IMPLEMENT_VEC_SCAL_OPERATOR_4( uint4, uint, << );
 IMPLEMENT_SCAL_OPERATOR_4( uint4, uint, *= );
 IMPLEMENT_SCAL_OPERATOR_4( uint4, uint, /= );
 IMPLEMENT_VEC_UNARY_OPERATOR_4( uint4, ~ );
+IMPLEMENT_VEC_REL_OPERATOR_4( uint4, < );
+IMPLEMENT_VEC_REL_OPERATOR_4( uint4, <= );
+IMPLEMENT_VEC_REL_OPERATOR_4( uint4, > );
+IMPLEMENT_VEC_REL_OPERATOR_4( uint4, >= );
 IMPLEMENT_VEC_VEC_OPERATOR_3( uint3, + );
 IMPLEMENT_VEC_VEC_OPERATOR_3( uint3, - );
 IMPLEMENT_VEC_VEC_OPERATOR_3( uint3, * );
@@ -354,6 +226,10 @@ IMPLEMENT_VEC_SCAL_OPERATOR_3( uint3, uint, << );
 IMPLEMENT_SCAL_OPERATOR_3( uint3, uint, *= );
 IMPLEMENT_SCAL_OPERATOR_3( uint3, uint, /= );
 IMPLEMENT_VEC_UNARY_OPERATOR_3( uint3, ~ );
+IMPLEMENT_VEC_REL_OPERATOR_3( uint3, < );
+IMPLEMENT_VEC_REL_OPERATOR_3( uint3, <= );
+IMPLEMENT_VEC_REL_OPERATOR_3( uint3, > );
+IMPLEMENT_VEC_REL_OPERATOR_3( uint3, >= );
 IMPLEMENT_VEC_VEC_OPERATOR_2( uint2, + );
 IMPLEMENT_VEC_VEC_OPERATOR_2( uint2, - );
 IMPLEMENT_VEC_VEC_OPERATOR_2( uint2, * );
@@ -371,6 +247,10 @@ IMPLEMENT_VEC_SCAL_OPERATOR_2( uint2, uint, << );
 IMPLEMENT_SCAL_OPERATOR_2( uint2, uint, *= );
 IMPLEMENT_SCAL_OPERATOR_2( uint2, uint, /= );
 IMPLEMENT_VEC_UNARY_OPERATOR_2( uint2, ~ );
+IMPLEMENT_VEC_REL_OPERATOR_2( uint2, < );
+IMPLEMENT_VEC_REL_OPERATOR_2( uint2, <= );
+IMPLEMENT_VEC_REL_OPERATOR_2( uint2, > );
+IMPLEMENT_VEC_REL_OPERATOR_2( uint2, >= );
 
 IMPLEMENT_VEC_VEC_OPERATOR_4( float4, + );
 IMPLEMENT_VEC_VEC_OPERATOR_4( float4, - );
@@ -385,6 +265,10 @@ IMPLEMENT_VEC_SCAL_OPERATOR_4( float4, float, / );
 IMPLEMENT_SCAL_OPERATOR_4( float4, float, *= );
 IMPLEMENT_SCAL_OPERATOR_4( float4, float, /= );
 IMPLEMENT_VEC_UNARY_OPERATOR_4( float4, - );
+IMPLEMENT_VEC_REL_OPERATOR_4( float4, < );
+IMPLEMENT_VEC_REL_OPERATOR_4( float4, <= );
+IMPLEMENT_VEC_REL_OPERATOR_4( float4, > );
+IMPLEMENT_VEC_REL_OPERATOR_4( float4, >= );
 IMPLEMENT_VEC_VEC_OPERATOR_3( float3, + );
 IMPLEMENT_VEC_VEC_OPERATOR_3( float3, - );
 IMPLEMENT_VEC_VEC_OPERATOR_3( float3, * );
@@ -398,6 +282,10 @@ IMPLEMENT_VEC_SCAL_OPERATOR_3( float3, float, / );
 IMPLEMENT_SCAL_OPERATOR_3( float3, float, *= );
 IMPLEMENT_SCAL_OPERATOR_3( float3, float, /= );
 IMPLEMENT_VEC_UNARY_OPERATOR_3( float3, - );
+IMPLEMENT_VEC_REL_OPERATOR_3( float3, < );
+IMPLEMENT_VEC_REL_OPERATOR_3( float3, <= );
+IMPLEMENT_VEC_REL_OPERATOR_3( float3, > );
+IMPLEMENT_VEC_REL_OPERATOR_3( float3, >= );
 IMPLEMENT_VEC_VEC_OPERATOR_2( float2, + );
 IMPLEMENT_VEC_VEC_OPERATOR_2( float2, - );
 IMPLEMENT_VEC_VEC_OPERATOR_2( float2, * );
@@ -411,3 +299,7 @@ IMPLEMENT_VEC_SCAL_OPERATOR_2( float2, float, / );
 IMPLEMENT_SCAL_OPERATOR_2( float2, float, *= );
 IMPLEMENT_SCAL_OPERATOR_2( float2, float, /= );
 IMPLEMENT_VEC_UNARY_OPERATOR_2( float2, - );
+IMPLEMENT_VEC_REL_OPERATOR_2( float2, < );
+IMPLEMENT_VEC_REL_OPERATOR_2( float2, <= );
+IMPLEMENT_VEC_REL_OPERATOR_2( float2, > );
+IMPLEMENT_VEC_REL_OPERATOR_2( float2, >= );
