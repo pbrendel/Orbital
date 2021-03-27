@@ -11,26 +11,25 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="FakeShader\fake_shader_defs.hlsl">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
+    <ClCompile Include="d3d.cpp" />
+    <ClCompile Include="d3dPerfCounter.cpp" />
+    <ClCompile Include="image.cpp" />
+    <ClCompile Include="pixelFormat.cpp" />
+    <ClCompile Include="shaderCache.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FakeShader\fakeShader.cpp" />
-    <ClCompile Include="FakeShader\fakeShaderSyntax.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="FakeShader\fakeShader.h" />
-    <ClInclude Include="FakeShader\fakeShaderBuffers.h" />
-    <ClInclude Include="FakeShader\fakeShaderSyntax.h" />
-    <ClInclude Include="FakeShader\fakeShaderTextures.h" />
+    <ClInclude Include="d3d.h" />
+    <ClInclude Include="d3dHelpers.h" />
+    <ClInclude Include="d3dPerfCounter.h" />
+    <ClInclude Include="image.h" />
+    <ClInclude Include="pixelFormat.h" />
+    <ClInclude Include="shaderCache.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{dcbde805-d8c4-43a4-8adc-9c29f76280dd}</ProjectGuid>
-    <RootNamespace>FakeShader</RootNamespace>
+    <ProjectGuid>{9dd50ce2-1e62-4b4f-b389-0520ba8a329b}</ProjectGuid>
+    <RootNamespace>Gfx</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -54,25 +53,19 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Orbital.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Orbital.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\bin\lib\</OutDir>
-    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
     <TargetName>$(ProjectName)_d</TargetName>
-    <LibraryPath>$(ProjectDir)..\bin\lib\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\bin\lib\</OutDir>
-    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <LibraryPath>$(ProjectDir)..\bin\lib\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -89,9 +82,6 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalDependencies>Core_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -112,9 +102,6 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
-    <Lib>
-      <AdditionalDependencies>Core.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

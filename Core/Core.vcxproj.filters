@@ -18,65 +18,65 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Core\assert.cpp">
+    <ClCompile Include="assert.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Core\file.cpp">
+    <ClCompile Include="file.cpp">
       <Filter>IO</Filter>
     </ClCompile>
-    <ClCompile Include="Core\perfCounter.cpp">
+    <ClCompile Include="perfCounter.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\dataWriter.h">
+    <ClInclude Include="dataWriter.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\deque.h">
+    <ClInclude Include="deque.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\dynArray.h">
+    <ClInclude Include="dynArray.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\dynBuffer.h">
+    <ClInclude Include="dynBuffer.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\map.h">
+    <ClInclude Include="map.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\ptr.h">
+    <ClInclude Include="ptr.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\set.h">
+    <ClInclude Include="set.h">
       <Filter>Containers</Filter>
     </ClInclude>
-    <ClInclude Include="Core\defs.h">
+    <ClInclude Include="defs.h">
       <Filter>Globals</Filter>
     </ClInclude>
-    <ClInclude Include="Core\types.h">
+    <ClInclude Include="types.h">
       <Filter>Globals</Filter>
     </ClInclude>
-    <ClInclude Include="Core\math.h">
+    <ClInclude Include="math.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Core\memUtils.h">
+    <ClInclude Include="memUtils.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Core\perfCounter.h">
+    <ClInclude Include="perfCounter.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Core\assert.h">
+    <ClInclude Include="assert.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="Core\file.h">
+    <ClInclude Include="file.h">
       <Filter>IO</Filter>
     </ClInclude>
-    <ClInclude Include="Core\vector.h">
+    <ClInclude Include="vector.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Core\helpers.h">
+    <ClInclude Include="helpers.h">
       <Filter>Globals</Filter>
     </ClInclude>
-    <ClInclude Include="orbital.h" />
+    <ClInclude Include="../orbital.h" />
   </ItemGroup>
 </Project>

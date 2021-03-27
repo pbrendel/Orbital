@@ -6,33 +6,32 @@
     </Filter>
     <Filter Include="Src">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FakeShader\fakeShader.cpp">
+    <ClCompile Include="fakeShader.cpp">
       <Filter>Src</Filter>
     </ClCompile>
-    <ClCompile Include="FakeShader\fakeShaderSyntax.cpp">
+    <ClCompile Include="fakeShaderSyntax.cpp">
       <Filter>Src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FakeShader\fakeShader.h">
+    <ClInclude Include="fakeShader.h">
       <Filter>Src</Filter>
     </ClInclude>
-    <ClInclude Include="FakeShader\fakeShaderBuffers.h">
+    <ClInclude Include="fakeShaderBuffers.h">
       <Filter>Src</Filter>
     </ClInclude>
-    <ClInclude Include="FakeShader\fakeShaderSyntax.h">
+    <ClInclude Include="fakeShaderSyntax.h">
       <Filter>Src</Filter>
     </ClInclude>
-    <ClInclude Include="FakeShader\fakeShaderTextures.h">
+    <ClInclude Include="fakeShaderTextures.h">
       <Filter>Src</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="FakeShader\fake_shader_defs.hlsl">
+    <FxCompile Include="fake_shader_defs.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

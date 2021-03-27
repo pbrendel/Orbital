@@ -12,39 +12,39 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Gfx\d3d.cpp">
+    <ClCompile Include="d3d.cpp">
       <Filter>D3D</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\d3dPerfCounter.cpp">
+    <ClCompile Include="d3dPerfCounter.cpp">
       <Filter>D3D</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\image.cpp">
+    <ClCompile Include="image.cpp">
       <Filter>Data</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\shaderCache.cpp">
+    <ClCompile Include="shaderCache.cpp">
       <Filter>ShaderCache</Filter>
     </ClCompile>
-    <ClCompile Include="Gfx\pixelFormat.cpp">
+    <ClCompile Include="pixelFormat.cpp">
       <Filter>Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Gfx\d3d.h">
+    <ClInclude Include="d3d.h">
       <Filter>D3D</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\d3dHelpers.h">
+    <ClInclude Include="d3dHelpers.h">
       <Filter>D3D</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\d3dPerfCounter.h">
+    <ClInclude Include="d3dPerfCounter.h">
       <Filter>D3D</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\image.h">
+    <ClInclude Include="image.h">
       <Filter>Data</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\shaderCache.h">
+    <ClInclude Include="shaderCache.h">
       <Filter>ShaderCache</Filter>
     </ClInclude>
-    <ClInclude Include="Gfx\pixelFormat.h">
+    <ClInclude Include="pixelFormat.h">
       <Filter>Data</Filter>
     </ClInclude>
   </ItemGroup>

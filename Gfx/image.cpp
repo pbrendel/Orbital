@@ -8,7 +8,7 @@
 #include <cctype>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb-master/stb_image.h"
+#include "external/stb/stb_image.h"
 
 
 enum class ImageFileFormat

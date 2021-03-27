@@ -11,25 +11,34 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Gfx\d3d.cpp" />
-    <ClCompile Include="Gfx\d3dPerfCounter.cpp" />
-    <ClCompile Include="Gfx\image.cpp" />
-    <ClCompile Include="Gfx\pixelFormat.cpp" />
-    <ClCompile Include="Gfx\shaderCache.cpp" />
+    <ClCompile Include="assert.cpp" />
+    <ClCompile Include="file.cpp" />
+    <ClCompile Include="perfCounter.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Gfx\d3d.h" />
-    <ClInclude Include="Gfx\d3dHelpers.h" />
-    <ClInclude Include="Gfx\d3dPerfCounter.h" />
-    <ClInclude Include="Gfx\image.h" />
-    <ClInclude Include="Gfx\pixelFormat.h" />
-    <ClInclude Include="Gfx\shaderCache.h" />
+    <ClInclude Include="assert.h" />
+    <ClInclude Include="dataWriter.h" />
+    <ClInclude Include="defs.h" />
+    <ClInclude Include="deque.h" />
+    <ClInclude Include="dynArray.h" />
+    <ClInclude Include="dynBuffer.h" />
+    <ClInclude Include="file.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="math.h" />
+    <ClInclude Include="memUtils.h" />
+    <ClInclude Include="perfCounter.h" />
+    <ClInclude Include="ptr.h" />
+    <ClInclude Include="set.h" />
+    <ClInclude Include="types.h" />
+    <ClInclude Include="helpers.h" />
+    <ClInclude Include="vector.h" />
+    <ClInclude Include="../orbital.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{9dd50ce2-1e62-4b4f-b389-0520ba8a329b}</ProjectGuid>
-    <RootNamespace>Gfx</RootNamespace>
+    <ProjectGuid>{e8de5c8b-5a99-4e12-9e5c-1e4bcc8fe411}</ProjectGuid>
+    <RootNamespace>Core</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -53,31 +62,25 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Orbital.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\Orbital.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)..\bin\lib\</OutDir>
-    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)..\..\external;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\bin\lib\;$(LibraryPath)</LibraryPath>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)..\bin\lib\</OutDir>
-    <IntDir>$(ProjectDir)..\bin\$(ProjectName)\$(Configuration)\</IntDir>
-    <IncludePath>$(ProjectDir);$(ProjectDir)..\..\external;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)..\bin\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
@@ -95,7 +98,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_LIB;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
