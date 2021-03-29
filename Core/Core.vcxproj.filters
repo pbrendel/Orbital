@@ -16,6 +16,9 @@
     <Filter Include="Globals">
       <UniqueIdentifier>{dc7b0ed0-121a-4aa4-9ff0-75b8534fda6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Nativs">
+      <UniqueIdentifier>{9c5ad844-f15c-45eb-8f1f-5d45b8ac5404}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="assert.cpp">
@@ -78,5 +81,10 @@
       <Filter>Globals</Filter>
     </ClInclude>
     <ClInclude Include="../orbital.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="containers.natvis">
+      <Filter>Nativs</Filter>
+    </Natvis>
   </ItemGroup>
 </Project>

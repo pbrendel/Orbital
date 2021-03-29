@@ -34,6 +34,9 @@
     <ClInclude Include="vector.h" />
     <ClInclude Include="../orbital.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="containers.natvis" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
