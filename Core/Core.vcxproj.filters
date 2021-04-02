@@ -30,6 +30,9 @@
     <ClCompile Include="perfCounter.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="vector.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dataWriter.h">
@@ -81,6 +84,9 @@
       <Filter>Globals</Filter>
     </ClInclude>
     <ClInclude Include="../orbital.h" />
+    <ClInclude Include="matrix.h">
+      <Filter>Math</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="containers.natvis">

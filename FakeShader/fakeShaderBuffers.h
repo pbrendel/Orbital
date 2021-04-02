@@ -85,6 +85,12 @@ public:
 		*reinterpret_cast<uint4 *>( &m_buffer[index] ) = value;
 	}
 
+	void InterlockedAdd( uint index, uint value, uint &prevValue )
+	{
+		prevValue = *reinterpret_cast<uint *>( &m_buffer[index] );
+		*reinterpret_cast<uint *>( &m_buffer[index] ) += value;
+	}
+
 	using ByteAddressBuffer::operator=;
 };
 

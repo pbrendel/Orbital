@@ -3,7 +3,11 @@
 #pragma once
 
 #include "types.h"
+#include "math.h"
 
+#include <algorithm>
+
+//////////////////////////////////////////////////////////////////////////
 
 template< typename T >
 struct vec2
@@ -11,7 +15,10 @@ struct vec2
 	T x;
 	T y;
 
-	inline explicit vec2( T _x = T( 0 ), T _y = T( 0 ) )
+	inline vec2()
+	{}
+
+	inline vec2( T _x, T _y )
 		: x( _x )
 		, y( _y )
 	{}
@@ -45,7 +52,10 @@ union vec3
 		T z1;
 	};
 
-	inline explicit vec3( T _x = T( 0 ), T _y = T( 0 ), T _z = T( 0 ) )
+	inline vec3()
+	{}
+
+	inline vec3( T _x, T _y, T _z )
 		: x( _x )
 		, y( _y )
 		, z( _z )
@@ -84,7 +94,10 @@ union vec4
 		vec2<T> zw;
 	};
 
-	inline explicit vec4( T _x = T( 0 ), T _y = T( 0 ), T _z = T( 0 ), T _w = T( 0 ) )
+	inline vec4()
+	{}
+
+	inline vec4( T _x, T _y, T _z, T _w )
 		: x( _x )
 		, y( _y )
 		, z( _z )
@@ -112,6 +125,7 @@ union vec4
 	}
 };
 
+//////////////////////////////////////////////////////////////////////////
 
 typedef vec2<uint> uint2;
 typedef vec3<uint> uint3;
@@ -123,48 +137,7 @@ typedef vec2<byte> bool2;
 typedef vec3<byte> bool3;
 typedef vec4<byte> bool4;
 
-
-template< typename T >
-inline bool operator==( const vec4<T> &a, const vec4<T> &b )
-{
-	return a.x == b.x && a.y == b.y && a.z == b.z && a.w == b.w;
-}
-
-
-template< typename T >
-inline bool operator==( const vec3<T> &a, const vec3<T> &b )
-{
-	return a.x == b.x && a.y == b.y && a.z == b.z;
-}
-
-
-template< typename T >
-inline bool operator==( const vec2<T> &a, const vec2<T> &b )
-{
-	return a.x == b.x && a.y == b.y;
-}
-
-
-template< typename T >
-inline bool operator!=( const vec4<T> &a, const vec4<T> &b )
-{
-	return !( a == b );
-}
-
-
-template< typename T >
-inline bool operator!=( const vec3<T> &a, const vec3<T> &b )
-{
-	return !( a == b );
-}
-
-
-template< typename T >
-inline bool operator!=( const vec2<T> &a, const vec2<T> &b )
-{
-	return !( a == b );
-}
-
+//////////////////////////////////////////////////////////////////////////
 
 #define IMPLEMENT_VEC_VEC_OPERATOR_4( type, op ) inline type operator##op( const type &a, const type &b ) { type ret; ret.x = a.x op b.x; ret.y = a.y op b.y; ret.z = a.z op b.z; ret.w = a.w op b.w; return ret; }
 #define IMPLEMENT_VEC_VEC_OPERATOR_3( type, op ) inline type operator##op( const type &a, const type &b ) { type ret; ret.x = a.x op b.x; ret.y = a.y op b.y; ret.z = a.z op b.z; return ret; }
@@ -200,11 +173,17 @@ IMPLEMENT_VEC_OPERATOR_4( uint4, *= );
 IMPLEMENT_VEC_OPERATOR_4( uint4, /= );
 IMPLEMENT_VEC_SCAL_OPERATOR_4( uint4, uint, * );
 IMPLEMENT_VEC_SCAL_OPERATOR_4( uint4, uint, / );
+IMPLEMENT_VEC_SCAL_OPERATOR_4( uint4, uint, + );
+IMPLEMENT_VEC_SCAL_OPERATOR_4( uint4, uint, - );
 IMPLEMENT_VEC_SCAL_OPERATOR_4( uint4, uint, >> );
 IMPLEMENT_VEC_SCAL_OPERATOR_4( uint4, uint, << );
 IMPLEMENT_SCAL_OPERATOR_4( uint4, uint, *= );
 IMPLEMENT_SCAL_OPERATOR_4( uint4, uint, /= );
+IMPLEMENT_SCAL_OPERATOR_4( uint4, uint, += );
+IMPLEMENT_SCAL_OPERATOR_4( uint4, uint, -= );
 IMPLEMENT_VEC_UNARY_OPERATOR_4( uint4, ~ );
+IMPLEMENT_VEC_REL_OPERATOR_4( uint4, == );
+IMPLEMENT_VEC_REL_OPERATOR_4( uint4, != );
 IMPLEMENT_VEC_REL_OPERATOR_4( uint4, < );
 IMPLEMENT_VEC_REL_OPERATOR_4( uint4, <= );
 IMPLEMENT_VEC_REL_OPERATOR_4( uint4, > );
@@ -221,11 +200,17 @@ IMPLEMENT_VEC_OPERATOR_3( uint3, *= );
 IMPLEMENT_VEC_OPERATOR_3( uint3, /= );
 IMPLEMENT_VEC_SCAL_OPERATOR_3( uint3, uint, * );
 IMPLEMENT_VEC_SCAL_OPERATOR_3( uint3, uint, / );
+IMPLEMENT_VEC_SCAL_OPERATOR_3( uint3, uint, + );
+IMPLEMENT_VEC_SCAL_OPERATOR_3( uint3, uint, - );
 IMPLEMENT_VEC_SCAL_OPERATOR_3( uint3, uint, >> );
 IMPLEMENT_VEC_SCAL_OPERATOR_3( uint3, uint, << );
 IMPLEMENT_SCAL_OPERATOR_3( uint3, uint, *= );
 IMPLEMENT_SCAL_OPERATOR_3( uint3, uint, /= );
+IMPLEMENT_SCAL_OPERATOR_3( uint3, uint, += );
+IMPLEMENT_SCAL_OPERATOR_3( uint3, uint, -= );
 IMPLEMENT_VEC_UNARY_OPERATOR_3( uint3, ~ );
+IMPLEMENT_VEC_REL_OPERATOR_3( uint3, == );
+IMPLEMENT_VEC_REL_OPERATOR_3( uint3, != );
 IMPLEMENT_VEC_REL_OPERATOR_3( uint3, < );
 IMPLEMENT_VEC_REL_OPERATOR_3( uint3, <= );
 IMPLEMENT_VEC_REL_OPERATOR_3( uint3, > );
@@ -242,11 +227,17 @@ IMPLEMENT_VEC_OPERATOR_2( uint2, *= );
 IMPLEMENT_VEC_OPERATOR_2( uint2, /= );
 IMPLEMENT_VEC_SCAL_OPERATOR_2( uint2, uint, * );
 IMPLEMENT_VEC_SCAL_OPERATOR_2( uint2, uint, / );
+IMPLEMENT_VEC_SCAL_OPERATOR_2( uint2, uint, + );
+IMPLEMENT_VEC_SCAL_OPERATOR_2( uint2, uint, - );
 IMPLEMENT_VEC_SCAL_OPERATOR_2( uint2, uint, >> );
 IMPLEMENT_VEC_SCAL_OPERATOR_2( uint2, uint, << );
 IMPLEMENT_SCAL_OPERATOR_2( uint2, uint, *= );
 IMPLEMENT_SCAL_OPERATOR_2( uint2, uint, /= );
+IMPLEMENT_SCAL_OPERATOR_2( uint2, uint, += );
+IMPLEMENT_SCAL_OPERATOR_2( uint2, uint, -= );
 IMPLEMENT_VEC_UNARY_OPERATOR_2( uint2, ~ );
+IMPLEMENT_VEC_REL_OPERATOR_2( uint2, == );
+IMPLEMENT_VEC_REL_OPERATOR_2( uint2, != );
 IMPLEMENT_VEC_REL_OPERATOR_2( uint2, < );
 IMPLEMENT_VEC_REL_OPERATOR_2( uint2, <= );
 IMPLEMENT_VEC_REL_OPERATOR_2( uint2, > );
@@ -262,9 +253,15 @@ IMPLEMENT_VEC_OPERATOR_4( float4, *= );
 IMPLEMENT_VEC_OPERATOR_4( float4, /= );
 IMPLEMENT_VEC_SCAL_OPERATOR_4( float4, float, * );
 IMPLEMENT_VEC_SCAL_OPERATOR_4( float4, float, / );
+IMPLEMENT_VEC_SCAL_OPERATOR_4( float4, float, + );
+IMPLEMENT_VEC_SCAL_OPERATOR_4( float4, float, - );
 IMPLEMENT_SCAL_OPERATOR_4( float4, float, *= );
 IMPLEMENT_SCAL_OPERATOR_4( float4, float, /= );
+IMPLEMENT_SCAL_OPERATOR_4( float4, float, += );
+IMPLEMENT_SCAL_OPERATOR_4( float4, float, -= );
 IMPLEMENT_VEC_UNARY_OPERATOR_4( float4, - );
+IMPLEMENT_VEC_REL_OPERATOR_4( float4, == );
+IMPLEMENT_VEC_REL_OPERATOR_4( float4, != );
 IMPLEMENT_VEC_REL_OPERATOR_4( float4, < );
 IMPLEMENT_VEC_REL_OPERATOR_4( float4, <= );
 IMPLEMENT_VEC_REL_OPERATOR_4( float4, > );
@@ -279,9 +276,15 @@ IMPLEMENT_VEC_OPERATOR_3( float3, *= );
 IMPLEMENT_VEC_OPERATOR_3( float3, /= );
 IMPLEMENT_VEC_SCAL_OPERATOR_3( float3, float, * );
 IMPLEMENT_VEC_SCAL_OPERATOR_3( float3, float, / );
+IMPLEMENT_VEC_SCAL_OPERATOR_3( float3, float, + );
+IMPLEMENT_VEC_SCAL_OPERATOR_3( float3, float, - );
 IMPLEMENT_SCAL_OPERATOR_3( float3, float, *= );
 IMPLEMENT_SCAL_OPERATOR_3( float3, float, /= );
+IMPLEMENT_SCAL_OPERATOR_3( float3, float, += );
+IMPLEMENT_SCAL_OPERATOR_3( float3, float, -= );
 IMPLEMENT_VEC_UNARY_OPERATOR_3( float3, - );
+IMPLEMENT_VEC_REL_OPERATOR_3( float3, == );
+IMPLEMENT_VEC_REL_OPERATOR_3( float3, != );
 IMPLEMENT_VEC_REL_OPERATOR_3( float3, < );
 IMPLEMENT_VEC_REL_OPERATOR_3( float3, <= );
 IMPLEMENT_VEC_REL_OPERATOR_3( float3, > );
@@ -296,10 +299,91 @@ IMPLEMENT_VEC_OPERATOR_2( float2, *= );
 IMPLEMENT_VEC_OPERATOR_2( float2, /= );
 IMPLEMENT_VEC_SCAL_OPERATOR_2( float2, float, * );
 IMPLEMENT_VEC_SCAL_OPERATOR_2( float2, float, / );
+IMPLEMENT_VEC_SCAL_OPERATOR_2( float2, float, + );
+IMPLEMENT_VEC_SCAL_OPERATOR_2( float2, float, - );
 IMPLEMENT_SCAL_OPERATOR_2( float2, float, *= );
 IMPLEMENT_SCAL_OPERATOR_2( float2, float, /= );
+IMPLEMENT_SCAL_OPERATOR_2( float2, float, += );
+IMPLEMENT_SCAL_OPERATOR_2( float2, float, -= );
 IMPLEMENT_VEC_UNARY_OPERATOR_2( float2, - );
+IMPLEMENT_VEC_REL_OPERATOR_2( float2, == );
+IMPLEMENT_VEC_REL_OPERATOR_2( float2, != );
 IMPLEMENT_VEC_REL_OPERATOR_2( float2, < );
 IMPLEMENT_VEC_REL_OPERATOR_2( float2, <= );
 IMPLEMENT_VEC_REL_OPERATOR_2( float2, > );
 IMPLEMENT_VEC_REL_OPERATOR_2( float2, >= );
+
+//////////////////////////////////////////////////////////////////////////
+
+#define IMPLEMENT_VEC_FUNC( type, name, impl )									\
+	inline type##2 name( const type##2 &v )										\
+	{																			\
+		return type##2( impl( v.x ), impl( v.y ) );								\
+	}																			\
+	inline type##3 name( const type##3 &v )										\
+	{																			\
+		return type##3( impl( v.x ), impl( v.y ), impl( v.y ) );				\
+	}																			\
+	inline type##4 name( const type##4 &v )										\
+	{																			\
+		return type##4( impl( v.x ), impl( v.y ), impl( v.z ), impl( v. w ) );	\
+	}																			
+
+#define IMPLEMENT_VEC_VEC_FUNC( type, name, impl )								\
+	inline type##2 name( const type##2 &a, const type##2 &b )					\
+	{																			\
+		return type##2( impl( a.x, b.x ), impl( a.y, b.y ) );					\
+	}																			\
+	inline type##3 name( const type##3 &a, const type##3 &b )					\
+	{																			\
+		return type##3( impl( a.x, b.x ), impl( a.y, b.y ), impl( a.z, b.z ) );	\
+	}																			\
+	inline type##4 name( const type##4 &a, const type##4 &b )					\
+	{																			\
+		return type##4( impl( a.x, b.x ), impl( a.y, b.y ), impl( a.z, b.z ), impl( a.w, b.w ) );	\
+	}																			
+
+#define IMPLEMENT_VEC_VEC_VEC_FUNC( type, name, impl )								\
+	inline type##2 name( const type##2 &a, const type##2 &b, const type##2 &c )		\
+	{																				\
+		return type##2( impl( a.x, b.x, c.x ), impl( a.y, b.y, c.y ) );				\
+	}																				\
+	inline type##3 name( const type##3 &a, const type##3 &b, const type##3 &c )		\
+	{																				\
+		return type##3( impl( a.x, b.x, c.x ), impl( a.y, b.y, c.y ), impl( a.z, b.z, c.z ) );	\
+	}																				\
+	inline type##4 name( const type##4 &a, const type##4 &b, const type##4 &c )		\
+	{																				\
+		return type##4( impl( a.x, b.x, c.x ), impl( a.y, b.y, c.y ), impl( a.z, b.z, c.z ), impl( a.w, b.w, c.w ) );	\
+	}																			
+
+
+IMPLEMENT_VEC_FUNC( float, abs, fabs );
+IMPLEMENT_VEC_FUNC( float, frac, frac );
+IMPLEMENT_VEC_FUNC( float, round, roundf );
+IMPLEMENT_VEC_FUNC( float, saturate, saturate );
+IMPLEMENT_VEC_FUNC( float, sign, sign );
+IMPLEMENT_VEC_VEC_FUNC( float, min, ( std::min ) );
+IMPLEMENT_VEC_VEC_FUNC( float, max, ( std::max ) );
+IMPLEMENT_VEC_VEC_FUNC( float, step, step );
+IMPLEMENT_VEC_VEC_VEC_FUNC( float, clamp, clamp );
+IMPLEMENT_VEC_VEC_VEC_FUNC( float, min3, min3 );
+IMPLEMENT_VEC_VEC_VEC_FUNC( float, max3, max3 );
+
+IMPLEMENT_VEC_VEC_FUNC( uint, min, ( std::min ) );
+IMPLEMENT_VEC_VEC_FUNC( uint, max, ( std::max ) );
+IMPLEMENT_VEC_VEC_FUNC( uint, step, step );
+IMPLEMENT_VEC_VEC_VEC_FUNC( uint, clamp, clamp );
+IMPLEMENT_VEC_VEC_VEC_FUNC( uint, min3, min3 );
+IMPLEMENT_VEC_VEC_VEC_FUNC( uint, max3, max3 );
+
+float3 cross( const float3 &a, const float3 &b );
+float dot( const float2 &a, const float2 &b );
+float dot( const float3 &a, const float3 &b );
+float dot( const float4 &a, const float4 &b );
+float length( const float2 &v );
+float length( const float3 &v );
+float length( const float4 &v );
+float2 normalize( const float2 &v );
+float3 normalize( const float3 &v );
+float4 normalize( const float4 &v );

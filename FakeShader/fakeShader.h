@@ -4,9 +4,12 @@
 
 #include "orbital.h"
 
-#include "fakeShaderSyntax.h"
+#include "Core/vector.h"
+#include "Core/matrix.h"
+
 #include "fakeShaderBuffers.h"
 #include "fakeShaderTextures.h"
+#include "fakeShaderSyntax.h"
 
 #include <functional>
 
@@ -194,21 +197,35 @@ struct FsResources
 #define FAKE_SHADER_RESOURCES_BEGIN		struct FsResDesc {
 #define FAKE_SHADER_RESOURCES_END }		static s_fsResDesc;
 
-#define FAKE_SHADER_CB_0					FsCbDesc m_cbDesc[1] = { { nullptr, 0 } };
-#define FAKE_SHADER_CB_1( index0 )			FsCbDesc m_cbDesc[1] = { { &s_cb##index0, sizeof( s_cb##index0 ) } };
-#define FAKE_SHADER_CB_2( index0, index1 )	FsCbDesc m_cbDesc[2] = { { &s_cb##index0, sizeof( s_cb##index0 ) }, { &s_cb##index1, sizeof( s_cb##index1 ) } };
+#define FAKE_SHADER_CB_0	\
+	FsCbDesc m_cbDesc[1] = { { nullptr, 0 } };
+#define FAKE_SHADER_CB_1( index0 )	\
+	FsCbDesc m_cbDesc[1] = { { &s_cb##index0, sizeof( s_cb##index0 ) } };
+#define FAKE_SHADER_CB_2( index0, index1 )	\
+	FsCbDesc m_cbDesc[2] = { { &s_cb##index0, sizeof( s_cb##index0 ) }, { &s_cb##index1, sizeof( s_cb##index1 ) } };
 
-#define FAKE_SHADER_SRV_0					FsSrvDesc m_srvDesc[1] = { FsSrvDesc() };
-#define FAKE_SHADER_SRV_1( srv0 )			FsSrvDesc m_srvDesc[1] = { FsSrvDesc( srv0 ) };
-#define FAKE_SHADER_SRV_2( srv0, srv1 )		FsSrvDesc m_srvDesc[2] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ) };
-#define FAKE_SHADER_SRV_3( srv0, srv1, srv2 )	FsSrvDesc m_srvDesc[3] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ), FsSrvDesc( srv2 ) };
+#define FAKE_SHADER_SRV_0	\
+	FsSrvDesc m_srvDesc[1] = { FsSrvDesc() };
+#define FAKE_SHADER_SRV_1( srv0 )	\
+	FsSrvDesc m_srvDesc[1] = { FsSrvDesc( srv0 ) };
+#define FAKE_SHADER_SRV_2( srv0, srv1 )	\
+	FsSrvDesc m_srvDesc[2] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ) };
+#define FAKE_SHADER_SRV_3( srv0, srv1, srv2 )	\
+	FsSrvDesc m_srvDesc[3] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ), FsSrvDesc( srv2 ) };
+#define FAKE_SHADER_SRV_4( srv0, srv1, srv2, srv3 )	\
+	FsSrvDesc m_srvDesc[4] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ), FsSrvDesc( srv2 ), FsSrvDesc( srv3 ) };
 
-#define FAKE_SHADER_UAV_0					FsUavDesc m_uavDesc[1] = { FsUavDesc() };
-#define FAKE_SHADER_UAV_1( uav0 )			FsUavDesc m_uavDesc[1] = { FsUavDesc( uav0 ) };
-#define FAKE_SHADER_UAV_2( uav0, uav1 )		FsUavDesc m_uavDesc[2] = { FsUavDesc( uav0 ), FsUavDesc( uav1 ) };
-#define FAKE_SHADER_UAV_3( uav0, uav1, uav2 )	FsUavDesc m_uavDesc[3] = { FsUavDesc( uav0 ), FsUavDesc( uav1 ), FsUavDesc( uav2 ) };
+#define FAKE_SHADER_UAV_0	\
+	FsUavDesc m_uavDesc[1] = { FsUavDesc() };
+#define FAKE_SHADER_UAV_1( uav0 )	\
+	FsUavDesc m_uavDesc[1] = { FsUavDesc( uav0 ) };
+#define FAKE_SHADER_UAV_2( uav0, uav1 )	\
+	FsUavDesc m_uavDesc[2] = { FsUavDesc( uav0 ), FsUavDesc( uav1 ) };
+#define FAKE_SHADER_UAV_3( uav0, uav1, uav2 )	\
+	FsUavDesc m_uavDesc[3] = { FsUavDesc( uav0 ), FsUavDesc( uav1 ), FsUavDesc( uav2 ) };
 
-#define FAKE_SHADER_RESOURCES( device ) ( device.GetType() == FsDevice::Type::Cpu ) ? FsResources( s_fsResDesc.m_cbDesc, s_fsResDesc.m_srvDesc, s_fsResDesc.m_uavDesc ) : FsResources();
+#define FAKE_SHADER_RESOURCES( device ) \
+	( device.GetType() == FsDevice::Type::Cpu ) ? FsResources( s_fsResDesc.m_cbDesc, s_fsResDesc.m_srvDesc, s_fsResDesc.m_uavDesc ) : FsResources();
 
 
 struct FsGroupSize

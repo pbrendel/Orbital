@@ -149,7 +149,7 @@ struct FloatToInteger
 	static void Convert( const void *src, void *dst )
 	{
 		constexpr float norm = float( std::numeric_limits<IntegerType>::max() );
-		*As<IntegerType>( dst ) = static_cast<IntegerType>( Saturate( *As<float>( src ) ) * norm );
+		*As<IntegerType>( dst ) = static_cast<IntegerType>( saturate( *As<float>( src ) ) * norm );
 	}
 };
 

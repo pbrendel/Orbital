@@ -6,7 +6,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <IncludePath>$(OrbitalDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(OrbitalDir)\bin\lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)bin\lib\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\lib\</OutDir>
     <IntDir>$(SolutionDir)bin\$(ProjectName)\$(Configuration)\</IntDir>
   </PropertyGroup>
