@@ -21,16 +21,16 @@ public:
 		, m_converter( nullptr )
 	{}
 		
-	void ResetRaw( const byte *data, uint width, uint height, uint dataPixelFormat, uint texturePixelFormat )
+	void ResetRaw( const void *data, uint width, uint height, uint dataPixelFormat, uint texturePixelFormat )
 	{
-		m_data = const_cast<byte *>( data );
+		m_data = As<byte>( RemoveConst( data ) );
 		m_width = width;
 		m_height = height;
 		m_bytesPerPixel = PixelFormat_GetBytesPerPixel( dataPixelFormat );
 		m_converter = PixelFormat_GetConverter( dataPixelFormat, texturePixelFormat );
 	}
 
-	void Reset( const byte *data, uint width, uint height, uint dataPixelFormat )
+	void Reset( const void *data, uint width, uint height, uint dataPixelFormat )
 	{
 		ResetRaw( data, width, height, dataPixelFormat, TypeToPixelFormat<T>::Value );
 	}
@@ -41,7 +41,7 @@ public:
 		const uint x = static_cast<uint>( uv.x * m_width );
 		const uint y = static_cast< uint >( uv.y * m_height );
 		const uint offset = ( x + y * m_width ) * m_bytesPerPixel;
-		float val = 0.0f;
+		T val;
 		m_converter( &m_data[offset], &val );
 		return val;
 	}
@@ -49,12 +49,12 @@ public:
 	T operator[]( uint2 index ) const
 	{
 		const uint offset = ( index.x + index.y * m_width ) * m_bytesPerPixel;
-		float val = 0.0f;
+		T val;
 		m_converter( &m_data[offset], &val );
 		return val;
 	}
 
-	constexpr const byte *GetData() const { return m_data; }
+	constexpr const void *GetData() const { return m_data; }
 	constexpr uint GetWidth() const { return m_width; }
 	constexpr uint GetHeight() const { return m_height; }
 
@@ -109,9 +109,9 @@ public:
 		, m_converter( nullptr )
 	{}
 
-	void ResetRaw( const byte *data, uint width, uint height, uint depth, uint dataPixelFormat, uint texturePixelFormat )
+	void ResetRaw( const void *data, uint width, uint height, uint depth, uint dataPixelFormat, uint texturePixelFormat )
 	{
-		m_data = const_cast<byte *>( data );
+		m_data = As<byte>( RemoveConst( data ) );
 		m_width = width;
 		m_height = height;
 		m_depth = depth;
@@ -119,20 +119,20 @@ public:
 		m_converter = PixelFormat_GetConverter( dataPixelFormat, texturePixelFormat );
 	}
 
-	void Reset( const byte *data, uint width, uint height, uint depth, uint dataPixelFormat )
+	void Reset( const void *data, uint width, uint height, uint depth, uint dataPixelFormat )
 	{
 		ResetRaw( data, width, height, depth, dataPixelFormat, TypeToPixelFormat<T>::Value );
 	}
 
 	T operator[]( uint3 index ) const
 	{
-		const uint offset = ( index.x + index.y + ( index.z * m_height ) * m_width ) * m_bytesPerPixel;
+		const uint offset = ( index.x + ( index.y + ( index.z * m_height ) ) * m_width ) * m_bytesPerPixel;
 		T val;
 		m_converter( &m_data[offset], &val );
 		return val;
 	}
 
-	constexpr const byte *GetData() const { return m_data; }
+	constexpr const void *GetData() const { return m_data; }
 	constexpr uint GetWidth() const { return m_width; }
 	constexpr uint GetHeight() const { return m_height; }
 	constexpr uint GetDepth() const { return m_depth; }
@@ -168,7 +168,7 @@ public:
 
 	T &operator[]( uint3 index )
 	{
-		const uint offset = ( index.x + index.y + ( index.z * this->m_height ) * this->m_width ) * this->m_bytesPerPixel;
+		const uint offset = ( index.x + ( index.y + ( index.z * this->m_height ) ) * this->m_width ) * this->m_bytesPerPixel;
 		return *As<T>( &this->m_data[offset] );
 	}
 };

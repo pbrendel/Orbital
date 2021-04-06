@@ -17,18 +17,20 @@
 
 ID3D11Device *D3D_CreateDevice();
 ID3D11DeviceContext *D3D_GetImmediateContext( ID3D11Device *device );
+ID3D11SamplerState *D3D_CreatePointClampSampler( ID3D11Device *device );
 ID3D11ComputeShader *D3D_CreateComputeShader( ID3D11Device *device, const char *filename, const char *entryPoint );
 ID3D11Buffer *D3D_CreateConstantBuffer( ID3D11Device *device, uint bufferSize, void *data );
-ID3D11Buffer *D3D_CreateStructuredBuffer( ID3D11Device *device, uint elementSize, uint count, void *data );
-ID3D11Buffer *D3D_CreateRawBuffer( ID3D11Device *device, uint bufferSize, void *data );
+void D3D_UpdateConstantBuffer( ID3D11DeviceContext *context, ID3D11Buffer *buffer, void *data );
+ID3D11Texture2D *D3D_CreateTexture( ID3D11Device *device, const void *data, uint width, uint height, uint depth, uint bytesPerPixel, DXGI_FORMAT pixelFormat );
+ID3D11ShaderResourceView *D3D_CreateTextureSRV( ID3D11Device *device, ID3D11Texture2D *texture, DXGI_FORMAT pixelFormat );
+ID3D11UnorderedAccessView *D3D_CreateTextureUAV( ID3D11Device *device, ID3D11Texture2D *texture, DXGI_FORMAT pixelFormat );
+ID3D11Buffer *D3D_CreateRawBuffer( ID3D11Device *device, uint bufferSize, const void *data );
+ID3D11Buffer *D3D_CreateStructuredBuffer( ID3D11Device *device, uint elementSize, uint count, const void *data );
 ID3D11Buffer *D3D_CreateCpuAccessBuffer( ID3D11Device* device, ID3D11DeviceContext* context, ID3D11Buffer* sourceBuffer, bool copyData );
-ID3D11Texture2D* D3D_CreateTexture( ID3D11Device* device, const void *data, uint width, uint height, uint bytesPerPixel );
 ID3D11ShaderResourceView *D3D_CreateBufferSRV( ID3D11Device *device, ID3D11Buffer *buffer );
 ID3D11UnorderedAccessView *D3D_CreateBufferUAV( ID3D11Device* device, ID3D11Buffer* buffer );
-ID3D11ShaderResourceView *D3D_CreateTextureSRV( ID3D11Device *device, ID3D11Texture2D *texture );
-void D3D_UpdateConstantBuffer( ID3D11DeviceContext *context, ID3D11Buffer *buffer, void *data );
-ID3D11SamplerState *D3D_CreatePointClampSampler( ID3D11Device* device );
 void D3D_ReadBack( ID3D11Device *d3dDevice, ID3D11Buffer *gpuBuffer, uint dataSize, void *data );
+DXGI_FORMAT D3D_GetPixelFormat( uint pixelFormat );
 
 //////////////////////////////////////////////////////////////////////////
 

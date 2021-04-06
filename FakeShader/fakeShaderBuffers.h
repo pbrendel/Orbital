@@ -11,41 +11,41 @@ public:
 		: m_buffer( nullptr )
 	{}
 
-	ByteAddressBuffer( byte *buffer )
-		: m_buffer( buffer )
+	ByteAddressBuffer( const byte *buffer )
+		: m_buffer( RemoveConst( buffer ) )
 	{}
 
-	void operator=( byte* buffer )
+	void operator=( const byte* buffer )
 	{
-		m_buffer = buffer;
+		m_buffer = RemoveConst( buffer );
 	}
 
-	void ResetRaw( void *buffer )
+	void ResetRaw( const void *buffer )
 	{
-		m_buffer = reinterpret_cast<byte *>( buffer );
+		m_buffer = As<byte>( RemoveConst( buffer ) );
 	}
-
-	constexpr const void *GetData() const { return m_buffer; }
 
 	uint Load( uint index ) const
 	{
-		return *reinterpret_cast<const uint *>( &m_buffer[index] );
+		return *As<uint>( &m_buffer[index] );
 	}
 
 	uint2 Load2( uint index ) const
 	{
-		return *reinterpret_cast<const uint2 *>( &m_buffer[index] );
+		return *As<uint2>( &m_buffer[index] );
 	}
 
 	const uint3 &Load3( uint index ) const
 	{
-		return *reinterpret_cast<const uint3 *>( &m_buffer[index] );
+		return *As<uint3>( &m_buffer[index] );
 	}
 
 	const uint4 &Load4( uint index ) const
 	{
-		return *reinterpret_cast<const uint4 *>( &m_buffer[index] );
+		return *As<uint4>( &m_buffer[index] );
 	}
+
+	constexpr const void *GetData() const { return m_buffer; }
 
 protected:
 
@@ -67,28 +67,28 @@ public:
 
 	void Store( uint index, uint value )
 	{
-		*reinterpret_cast<uint *>( &m_buffer[index] ) = value;
+		*As<uint>( &m_buffer[index] ) = value;
 	}
 
 	void Store2( uint index, uint2 value )
 	{
-		*reinterpret_cast<uint2 *>( &m_buffer[index] ) = value;
+		*As<uint2>( &m_buffer[index] ) = value;
 	}
 
 	void Store3( uint index, const uint3 &value )
 	{
-		*reinterpret_cast<uint3 *>( &m_buffer[index] ) = value;
+		*As<uint3>( &m_buffer[index] ) = value;
 	}
 
 	void Store4( uint index, const uint4 &value )
 	{
-		*reinterpret_cast<uint4 *>( &m_buffer[index] ) = value;
+		*As<uint4>( &m_buffer[index] ) = value;
 	}
 
 	void InterlockedAdd( uint index, uint value, uint &prevValue )
 	{
-		prevValue = *reinterpret_cast<uint *>( &m_buffer[index] );
-		*reinterpret_cast<uint *>( &m_buffer[index] ) += value;
+		prevValue = *As<uint>( &m_buffer[index] );
+		*As<uint>( &m_buffer[index] ) += value;
 	}
 
 	using ByteAddressBuffer::operator=;
@@ -104,18 +104,18 @@ public:
 		: m_buffer( nullptr )
 	{}
 
-	StructuredBuffer( T *buffer )
-		: m_buffer( buffer )
+	StructuredBuffer( const T *buffer )
+		: m_buffer( RemoveConst( buffer ) )
 	{}
 
-	void operator=( T *buffer )
+	void operator=( const T *buffer )
 	{
-		m_buffer = buffer;
+		m_buffer = RemoveConst( buffer );
 	}
 
-	void ResetRaw( void *buffer )
+	void ResetRaw( const void *buffer )
 	{
-		m_buffer = reinterpret_cast<T *>( buffer );
+		m_buffer = As<T>( RemoveConst( buffer ) );
 	}
 
 	constexpr const void *GetData() const { return m_buffer; }

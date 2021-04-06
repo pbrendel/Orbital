@@ -53,6 +53,8 @@ public:
 	ConstIterator Begin() const { return m_data.begin(); }
 	ConstIterator End() const { return m_data.end(); }
 
+	const T *GetData() const { return m_data.data(); }
+
 private:
 
 	Data m_data;

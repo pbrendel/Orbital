@@ -24,7 +24,7 @@ public:
 	constexpr uint GetWidth() const { return m_width; }
 	constexpr uint GetHeight() const { return m_height; }
 	constexpr uint GetPixelFormat() const { return m_pixelFormat; }
-	constexpr bool GetDataSize() const { return m_data.GetSize(); }
+	constexpr uint GetDataSize() const { return m_data.GetSize(); }
 	byte *GetData() { return m_data.Get(); }
 	const byte *GetData() const { return m_data.Get(); }
 

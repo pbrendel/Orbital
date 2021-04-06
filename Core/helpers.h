@@ -4,6 +4,8 @@
 
 #include "types.h"
 
+#include <limits>
+
 
 template< typename T, uint N >
 constexpr uint ArrayCount( const T (&arr)[N] )
@@ -47,7 +49,27 @@ constexpr T *PtrOffset( T *ptr, uint offset )
 
 
 template< typename T >
+constexpr T *RemoveConst( const T *ptr )
+{
+	return const_cast<T *>( ptr );
+}
+
+template< typename T >
 constexpr const T *PtrOffset( const T *ptr, uint offset )
 {
 	return reinterpret_cast<const T *>( reinterpret_cast<const byte *>( ptr ) + offset );
+}
+
+
+template< typename T >
+constexpr T TypeMin()
+{
+	return (std::numeric_limits<T>::min)();
+}
+
+
+template< typename T >
+constexpr T TypeMax()
+{
+	return (std::numeric_limits<T>::max)();
 }

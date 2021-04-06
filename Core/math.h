@@ -8,6 +8,14 @@
 
 #define O_PI 3.14159265358979323846
 
+#ifdef min
+#undef min
+#endif // #ifdef min
+
+#ifdef max
+#undef max
+#endif // #ifdef max
+
 
 constexpr bool IsPow2( uint i )
 {
@@ -25,6 +33,12 @@ template< typename T >
 constexpr T clamp( T f, T a, T b )
 {
 	return f > a ? a : ( f < b ? b : f );
+}
+
+
+constexpr float deg2rad( float deg )
+{
+	return static_cast<float>( deg * O_PI / 180.0f );
 }
 
 

@@ -15,10 +15,10 @@ enum PixelFormat : uint
 	PIXEL_FORMAT_RGB_FLOAT,
 	PIXEL_FORMAT_RG_FLOAT,
 	PIXEL_FORMAT_R_FLOAT,
-	PIXEL_FORMAT_RGBA_UNORM,
-	PIXEL_FORMAT_RGB_UNORM,
-	PIXEL_FORMAT_RG_UNORM,
-	PIXEL_FORMAT_R_UNORM,
+	PIXEL_FORMAT_RGBA_UINT,
+	PIXEL_FORMAT_RGB_UINT,
+	PIXEL_FORMAT_RG_UINT,
+	PIXEL_FORMAT_R_UINT,
 	PIXEL_FORMAT_RGBA_BYTE,
 	PIXEL_FORMAT_RGB_BYTE,
 	PIXEL_FORMAT_RG_BYTE,
@@ -31,7 +31,7 @@ typedef std::function<void( const void *, void * )> PixelFormatConverter;
 uint PixelFormat_GetChannelsCount( uint format );
 uint PixelFormat_GetBytesPerPixel( uint format );
 bool PixelFormat_IsFloat( uint format );
-bool PixelFormat_IsUnorm( uint format );
+bool PixelFormat_IsUint( uint format );
 bool PixelFormat_IsByte( uint format );
 PixelFormatConverter PixelFormat_GetConverter( uint srcFormat, uint dstFormat );
 
@@ -41,7 +41,7 @@ template<> struct TypeToPixelFormat<float> { static const uint Value = PIXEL_FOR
 template<> struct TypeToPixelFormat<float2> { static const uint Value = PIXEL_FORMAT_RG_FLOAT; };
 template<> struct TypeToPixelFormat<float3> { static const uint Value = PIXEL_FORMAT_RGB_FLOAT; };
 template<> struct TypeToPixelFormat<float4> { static const uint Value = PIXEL_FORMAT_RGBA_FLOAT; };
-template<> struct TypeToPixelFormat<uint> { static const uint Value = PIXEL_FORMAT_R_UNORM; };
-template<> struct TypeToPixelFormat<uint2> { static const uint Value = PIXEL_FORMAT_RG_UNORM; };
-template<> struct TypeToPixelFormat<uint3> { static const uint Value = PIXEL_FORMAT_RGB_UNORM; };
-template<> struct TypeToPixelFormat<uint4> { static const uint Value = PIXEL_FORMAT_RGBA_UNORM; };
+template<> struct TypeToPixelFormat<uint> { static const uint Value = PIXEL_FORMAT_R_UINT; };
+template<> struct TypeToPixelFormat<uint2> { static const uint Value = PIXEL_FORMAT_RG_UINT; };
+template<> struct TypeToPixelFormat<uint3> { static const uint Value = PIXEL_FORMAT_RGB_UINT; };
+template<> struct TypeToPixelFormat<uint4> { static const uint Value = PIXEL_FORMAT_RGBA_UINT; };

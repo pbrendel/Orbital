@@ -1,4 +1,4 @@
-// pbrendel (c) 2019-21
+// pbrendel (c) 2021
 
 #pragma once
 
@@ -123,3 +123,11 @@ vec2<T> mul( const vec2<T> &v, const mat2x2<T> &m )
 {
 	return m.x * v.x + m.y * v.y;
 }
+
+
+void IdentityMatrix( float4x4 &outMatrix );
+void IdentityMatrix( float3x3 &outMatrix );
+void IdentityMatrix( float2x2 &outMatrix );
+void TranslationMatrix( const float3 &t, float4x4 &outMatrix );
+void InfiniteProjectionMatrix( float tanHalfFovX, float tanHalfFovY, float nearZ, float4x4 &outMatrix );
+void ClipToScreenMatrix( float screenWidth, float screenHeight, float3x3 &outMatrix );

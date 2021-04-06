@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="assert.cpp" />
     <ClCompile Include="file.cpp" />
+    <ClCompile Include="matrix.cpp" />
     <ClCompile Include="perfCounter.cpp" />
     <ClCompile Include="vector.cpp" />
   </ItemGroup>

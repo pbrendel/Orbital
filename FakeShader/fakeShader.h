@@ -120,7 +120,7 @@ struct FsUavDesc
 	{}
 
 	template< typename T >
-	FsUavDesc( Texture2DArray<T> &texArr )
+	FsUavDesc( RWTexture2DArray<T> &texArr )
 		: m_textureArray( As<Texture2DArrayCommon>( &texArr ) )
 		, m_type( UAV_TYPE_TEXTURE_2D_ARRAY )
 		, m_pixelFormat( TypeToPixelFormat<T>::Value )
@@ -214,6 +214,8 @@ struct FsResources
 	FsSrvDesc m_srvDesc[3] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ), FsSrvDesc( srv2 ) };
 #define FAKE_SHADER_SRV_4( srv0, srv1, srv2, srv3 )	\
 	FsSrvDesc m_srvDesc[4] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ), FsSrvDesc( srv2 ), FsSrvDesc( srv3 ) };
+#define FAKE_SHADER_SRV_5( srv0, srv1, srv2, srv3, srv4 )	\
+	FsSrvDesc m_srvDesc[5] = { FsSrvDesc( srv0 ), FsSrvDesc( srv1 ), FsSrvDesc( srv2 ), FsSrvDesc( srv3 ), FsSrvDesc( srv4 ) };
 
 #define FAKE_SHADER_UAV_0	\
 	FsUavDesc m_uavDesc[1] = { FsUavDesc() };
@@ -290,12 +292,20 @@ public:
 
 	constexpr Type GetType() const { return m_type; }
 
+	void Reset();
+
 	FsId CreateConstantBuffer( const FsResources &res, uint size, void *data );
 	void UpdateConstantBuffer( FsId cbId, void *data ) const;
 
 	FsId CreateTextureSRV( const FsResources &res, const Image &img );
+	FsId CreateTextureSRV( const FsResources &res, uint width, uint height, uint depth, uint pixelFormat, const void *data );
+	FsId CreateRawBufferSRV( const FsResources &res, uint bufferSize, const void *data );
+	FsId CreateStructuredBufferSRV( const FsResources &res, uint elemSize, uint count, const void *data );
 	void ApplySRV() const;
 
+	FsId CreateTextureUAV( const FsResources &res, Image &img );
+	FsId CreateTextureUAV( const FsResources &res, uint width, uint height, uint depth, uint pixelFormat, void *data );
+	FsId CreateRawBufferUAV( const FsResources &res, uint bufferSize, void *data );
 	FsId CreateStructuredBufferUAV( const FsResources &res, uint elemSize, uint count, void *data );
 	void ApplyUAV() const;
 

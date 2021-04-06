@@ -9,23 +9,23 @@ uint PixelFormat_GetChannelsCount( uint format )
 	switch ( format )
 	{
 	case PIXEL_FORMAT_RGBA_FLOAT:
-	case PIXEL_FORMAT_RGBA_UNORM:
+	case PIXEL_FORMAT_RGBA_UINT:
 	case PIXEL_FORMAT_RGBA_BYTE:
 		return 4;
 	case PIXEL_FORMAT_RGB_FLOAT:
-	case PIXEL_FORMAT_RGB_UNORM:
+	case PIXEL_FORMAT_RGB_UINT:
 	case PIXEL_FORMAT_RGB_BYTE:
 		return 3;
 	case PIXEL_FORMAT_RG_FLOAT:
-	case PIXEL_FORMAT_RG_UNORM:
+	case PIXEL_FORMAT_RG_UINT:
 	case PIXEL_FORMAT_RG_BYTE:
 		return 2;
 	case PIXEL_FORMAT_R_FLOAT:
-	case PIXEL_FORMAT_R_UNORM:
+	case PIXEL_FORMAT_R_UINT:
 	case PIXEL_FORMAT_R_BYTE:
 		return 1;
 	default:
-		assertex( false, "Unknown image format." );
+		assertex( false, "Unknown pixel format." );
 		return 0;
 	}
 }
@@ -36,17 +36,17 @@ uint PixelFormat_GetBytesPerPixel( uint format )
 	switch ( format )
 	{
 	case PIXEL_FORMAT_RGBA_FLOAT:
-	case PIXEL_FORMAT_RGBA_UNORM:
+	case PIXEL_FORMAT_RGBA_UINT:
 		return 16;
 	case PIXEL_FORMAT_RGB_FLOAT:
-	case PIXEL_FORMAT_RGB_UNORM:
+	case PIXEL_FORMAT_RGB_UINT:
 		return 12;
 	case PIXEL_FORMAT_RG_FLOAT:
-	case PIXEL_FORMAT_RG_UNORM:
+	case PIXEL_FORMAT_RG_UINT:
 		return 8;
 	case PIXEL_FORMAT_RGBA_BYTE:
 	case PIXEL_FORMAT_R_FLOAT:
-	case PIXEL_FORMAT_R_UNORM:
+	case PIXEL_FORMAT_R_UINT:
 		return 4;
 	case PIXEL_FORMAT_RGB_BYTE:
 		return 3;
@@ -55,7 +55,7 @@ uint PixelFormat_GetBytesPerPixel( uint format )
 	case PIXEL_FORMAT_R_BYTE:
 		return 1;
 	default:
-		assertex( false, "Unknown image format." );
+		assertex( false, "Unknown pixel format." );
 		return 0;
 	}
 }
@@ -70,30 +70,30 @@ bool PixelFormat_IsFloat( uint format )
 	case PIXEL_FORMAT_RG_FLOAT:
 	case PIXEL_FORMAT_R_FLOAT:
 		return true;
-	case PIXEL_FORMAT_RGBA_UNORM:
-	case PIXEL_FORMAT_RGB_UNORM:
-	case PIXEL_FORMAT_RG_UNORM:
-	case PIXEL_FORMAT_R_UNORM:
+	case PIXEL_FORMAT_RGBA_UINT:
+	case PIXEL_FORMAT_RGB_UINT:
+	case PIXEL_FORMAT_RG_UINT:
+	case PIXEL_FORMAT_R_UINT:
 	case PIXEL_FORMAT_RGBA_BYTE:
 	case PIXEL_FORMAT_RGB_BYTE:
 	case PIXEL_FORMAT_RG_BYTE:
 	case PIXEL_FORMAT_R_BYTE:
 		return false;
 	default:
-		assertex( false, "Unknown image format." );
+		assertex( false, "Unknown pixel format." );
 		return false;
 	}
 }
 
 
-bool PixelFormat_IsUnorm( uint format )
+bool PixelFormat_IsUint( uint format )
 {
 	switch ( format )
 	{
-	case PIXEL_FORMAT_RGBA_UNORM:
-	case PIXEL_FORMAT_RGB_UNORM:
-	case PIXEL_FORMAT_RG_UNORM:
-	case PIXEL_FORMAT_R_UNORM:
+	case PIXEL_FORMAT_RGBA_UINT:
+	case PIXEL_FORMAT_RGB_UINT:
+	case PIXEL_FORMAT_RG_UINT:
+	case PIXEL_FORMAT_R_UINT:
 		return true;
 	case PIXEL_FORMAT_RGBA_FLOAT:
 	case PIXEL_FORMAT_RGB_FLOAT:
@@ -105,7 +105,7 @@ bool PixelFormat_IsUnorm( uint format )
 	case PIXEL_FORMAT_R_BYTE:
 		return false;
 	default:
-		assertex( false, "Unknown image format." );
+		assertex( false, "Unknown pixel format." );
 		return false;
 	}
 }
@@ -124,13 +124,13 @@ bool PixelFormat_IsByte( uint format )
 	case PIXEL_FORMAT_RGB_FLOAT:
 	case PIXEL_FORMAT_RG_FLOAT:
 	case PIXEL_FORMAT_R_FLOAT:
-	case PIXEL_FORMAT_RGBA_UNORM:
-	case PIXEL_FORMAT_RGB_UNORM:
-	case PIXEL_FORMAT_RG_UNORM:
-	case PIXEL_FORMAT_R_UNORM:
+	case PIXEL_FORMAT_RGBA_UINT:
+	case PIXEL_FORMAT_RGB_UINT:
+	case PIXEL_FORMAT_RG_UINT:
+	case PIXEL_FORMAT_R_UINT:
 		return false;
 	default:
-		assertex( false, "Unknown image format." );
+		assertex( false, "Unknown pixel format." );
 		return false;
 	}
 }
@@ -148,7 +148,7 @@ struct FloatToInteger
 
 	static void Convert( const void *src, void *dst )
 	{
-		constexpr float norm = float( std::numeric_limits<IntegerType>::max() );
+		constexpr float norm = float( TypeMax<IntegerType>() );
 		*As<IntegerType>( dst ) = static_cast<IntegerType>( saturate( *As<float>( src ) ) * norm );
 	}
 };
@@ -162,7 +162,7 @@ struct IntegerToFloat
 
 	static void Convert( const void *src, void *dst )
 	{
-		constexpr float norm = 1.0f / float( std::numeric_limits<IntegerType>::max() );
+		constexpr float norm = 1.0f / float( TypeMax<IntegerType>() );
 		*As<float>( dst ) = static_cast<float>( *As<IntegerType>( src ) ) * norm;
 	}
 };
@@ -176,7 +176,7 @@ struct IntegerToInteger
 
 	static void Convert( const void *src, void *dst )
 	{
-		constexpr float norm = float( std::numeric_limits<DstIntegerType>::max() ) / float( std::numeric_limits<SrcIntegerType>::max() );
+		constexpr float norm = float( TypeMax<DstIntegerType>() ) / float( TypeMax<SrcIntegerType>() );
 		*As<DstIntegerType>( dst ) = static_cast<DstIntegerType>( static_cast<float>( *As<SrcIntegerType>( src ) ) * norm );
 	}
 };
@@ -207,7 +207,7 @@ struct Channels
 		{
 			InternalConverter::Convert( src, dst );
 			src = PtrOffset( src, sizeof( SrcType ) );
-			src = PtrOffset( dst, sizeof( DstType ) );
+			dst = PtrOffset( dst, sizeof( DstType ) );
 		}
 	}
 };
@@ -239,7 +239,7 @@ PixelFormatConverter PixelFormat_GetConverter( uint srcFormat, uint dstFormat )
 				return InternalConverter::Convert;
 			}
 		}
-		else if ( PixelFormat_IsUnorm( dstFormat ) )
+		else if ( PixelFormat_IsUint( dstFormat ) )
 		{
 			typedef FloatToInteger<uint> InternalConverter;
 			switch ( dstChannelsCount )
@@ -270,7 +270,7 @@ PixelFormatConverter PixelFormat_GetConverter( uint srcFormat, uint dstFormat )
 			}
 		}
 	}
-	else if ( PixelFormat_IsUnorm( srcFormat ) )
+	else if ( PixelFormat_IsUint( srcFormat ) )
 	{
 		if ( PixelFormat_IsFloat( dstFormat ) )
 		{
@@ -287,7 +287,7 @@ PixelFormatConverter PixelFormat_GetConverter( uint srcFormat, uint dstFormat )
 				return InternalConverter::Convert;
 			}
 		}
-		else if ( PixelFormat_IsUnorm( dstFormat ) )
+		else if ( PixelFormat_IsUint( dstFormat ) )
 		{
 			typedef Passthrough<uint> InternalConverter;
 			switch ( dstChannelsCount )
@@ -335,7 +335,7 @@ PixelFormatConverter PixelFormat_GetConverter( uint srcFormat, uint dstFormat )
 				return InternalConverter::Convert;
 			}
 		}
-		else if ( PixelFormat_IsUnorm( dstFormat ) )
+		else if ( PixelFormat_IsUint( dstFormat ) )
 		{
 			typedef IntegerToInteger<byte, uint> InternalConverter;
 			switch ( dstChannelsCount )

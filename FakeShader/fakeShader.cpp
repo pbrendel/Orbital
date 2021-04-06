@@ -64,6 +64,20 @@ public:
 		return type == FsDevice::Type::Cpu;
 	}
 
+	void Reset()
+	{
+		m_constantBuffer = nullptr;
+		m_constantBufferSize = 0;
+
+		m_srvCount = 0;
+
+		m_uavDesc = nullptr;
+		m_uavCount = 0;
+
+		m_bufferMem.Clear();
+		m_shaderEntryPoints.Clear();
+	}
+
 	FsId CreateConstantBuffer( const FsResources &res, uint size, void *data )
 	{
 		assert( res.m_cbCount > 0 );
@@ -80,13 +94,89 @@ public:
 		memcpy( m_constantBuffer, data, m_constantBufferSize );
 	}
 
-	FsId CreateTextureSRV( const FsResources &res, const Image &img )
+	FsId CreateTextureSRV( const FsResources &res, uint width, uint height, uint depth, uint pixelFormat, const void *data )
 	{
 		assert( m_srvCount < res.m_srvCount );
-		assert( res.m_srvDesc[m_srvCount].m_type == FsSrvDesc::SRV_TYPE_TEXTURE_2D );
-		res.m_srvDesc[m_srvCount].m_texture->ResetRaw( img.GetData(), img.GetWidth(), img.GetHeight(), img.GetPixelFormat(), res.m_srvDesc[m_srvCount].m_pixelFormat );
+		if ( depth == 1 )
+		{
+			assert( res.m_srvDesc[m_srvCount].m_type == FsSrvDesc::SRV_TYPE_TEXTURE_2D );
+			res.m_srvDesc[m_srvCount].m_texture->ResetRaw( data, width, height, pixelFormat, res.m_srvDesc[m_srvCount].m_pixelFormat );
+		}
+		else
+		{
+			assert( res.m_srvDesc[m_srvCount].m_type == FsSrvDesc::SRV_TYPE_TEXTURE_2D_ARRAY );
+			res.m_srvDesc[m_srvCount].m_textureArray->ResetRaw( data, width, height, depth, pixelFormat, res.m_srvDesc[m_srvCount].m_pixelFormat );
+		}
 		m_srvCount++;
 		return static_cast<FsId>( m_srvCount - 1 );
+	}
+
+	FsId CreateRawBufferSRV( const FsResources &res, const void *data )
+	{
+		assert( m_srvCount < res.m_srvCount );
+		assert( res.m_srvDesc[m_srvCount].m_type == FsSrvDesc::SRV_TYPE_RAW_BUFFER );
+		res.m_srvDesc[m_srvCount].m_rawBuffer->ResetRaw( data );
+		m_srvCount++;
+		return static_cast<FsId>( m_srvCount - 1 );
+	}
+
+	FsId CreateStructuredBufferSRV( const FsResources &res, const void *data )
+	{
+		assert( m_srvCount < res.m_srvCount );
+		assert( res.m_srvDesc[m_srvCount].m_type == FsSrvDesc::SRV_TYPE_STRUCTURED_BUFFER );
+		res.m_srvDesc[m_srvCount].m_structuredBuffer->ResetRaw( data );
+		m_srvCount++;
+		return static_cast<FsId>( m_srvCount - 1 );
+	}
+
+	FsId CreateTextureUAV( const FsResources &res, uint width, uint height, uint depth, uint pixelFormat, void *data )
+	{
+		assert( m_uavCount < res.m_uavCount );
+		assert( m_uavDesc == nullptr || m_uavDesc == res.m_uavDesc );
+
+		m_uavDesc = res.m_uavDesc;
+		if ( depth == 1 )
+		{
+			assert( m_uavDesc[m_uavCount].m_type == FsUavDesc::UAV_TYPE_TEXTURE_2D );
+		}
+		else
+		{
+			assert( m_uavDesc[m_uavCount].m_type == FsUavDesc::UAV_TYPE_TEXTURE_2D_ARRAY );
+		}
+		if ( data == nullptr )
+		{
+			o::DynBuffer<byte> newData( width * height * depth * PixelFormat_GetBytesPerPixel( pixelFormat ) );
+			data = newData.Get();
+			m_bufferMem.PushBack( std::move( newData ) );
+		}
+		if ( depth == 1 )
+		{
+			m_uavDesc[m_uavCount].m_texture->ResetRaw( data, width, height, pixelFormat, m_uavDesc[m_uavCount].m_pixelFormat );
+		}
+		else
+		{
+			m_uavDesc[m_uavCount].m_textureArray->ResetRaw( data, width, height, depth, pixelFormat, m_uavDesc[m_uavCount].m_pixelFormat );
+		}
+		m_uavCount++;
+		return static_cast<FsId>( m_uavCount - 1 );
+	}
+
+	FsId CreateRawBufferUAV( const FsResources &res, uint bufferSize, void *data )
+	{
+		assert( m_uavCount < res.m_uavCount );
+		assert( m_uavDesc == nullptr || m_uavDesc == res.m_uavDesc );
+
+		m_uavDesc = res.m_uavDesc;
+		assert( m_uavDesc[m_uavCount].m_type == FsUavDesc::UAV_TYPE_RAW_BUFFER );
+		if ( data == nullptr )
+		{
+			o::DynBuffer<byte> newData( bufferSize );
+			data = newData.Get();
+			m_bufferMem.PushBack( std::move( newData ) );
+		}
+		m_uavDesc[m_uavCount].m_rawBuffer->ResetRaw( data );
+		m_uavCount++;
+		return static_cast<FsId>( m_uavCount - 1 );
 	}
 
 	FsId CreateStructuredBufferUAV( const FsResources &res, uint elemSize, uint count, void *data )
@@ -144,7 +234,15 @@ public:
 	{
 		const uint bufferIndex = static_cast<uint>( uavId );
 		assert( bufferIndex < m_uavCount );
-		if ( m_uavDesc[bufferIndex].m_type == FsUavDesc::UAV_TYPE_RAW_BUFFER )
+		if ( m_uavDesc[bufferIndex].m_type == FsUavDesc::UAV_TYPE_TEXTURE_2D )
+		{
+			memcpy( data, m_uavDesc[bufferIndex].m_texture->GetData(), dataSize );
+		}
+		else if ( m_uavDesc[bufferIndex].m_type == FsUavDesc::UAV_TYPE_TEXTURE_2D_ARRAY )
+		{
+			memcpy( data, m_uavDesc[bufferIndex].m_textureArray->GetData(), dataSize );
+		}
+		else if ( m_uavDesc[bufferIndex].m_type == FsUavDesc::UAV_TYPE_RAW_BUFFER )
 		{
 			memcpy( data, m_uavDesc[bufferIndex].m_rawBuffer->GetData(), dataSize );
 		}
@@ -194,13 +292,24 @@ public:
 
 	~FakeShaderDeviceD3D()
 	{
+		Reset();
+
 		ID3D11SamplerState *nullSamplers[] = { nullptr };
 		m_context->CSSetSamplers( 0, ArrayCount( nullSamplers ), nullSamplers );
+	}
 
+	bool IsA( FsDevice::Type type ) const
+	{
+		return type == FsDevice::Type::Gpu;
+	}
+
+	void Reset()
+	{
 		if ( m_constantBuffer )
 		{
 			ID3D11Buffer *nullConstantBuffers[] = { nullptr };
 			m_context->CSSetConstantBuffers( 0, ArrayCount( nullConstantBuffers ), nullConstantBuffers );
+			m_constantBuffer.Reset();
 		}
 
 		if ( !m_srv.IsEmpty() )
@@ -208,6 +317,10 @@ public:
 			o::DynBuffer<ID3D11ShaderResourceView *> nullSrv( m_srv.GetSize() );
 			memset( nullSrv.Get(), 0, nullSrv.GetDataSize() );
 			m_context->CSSetShaderResources( 0, nullSrv.GetSize(), nullSrv.Get() );
+
+			m_srv.Clear();
+			m_srvTextures.Clear();
+			m_srvBuffers.Clear();
 		}
 
 		if ( !m_uav.IsEmpty() )
@@ -215,12 +328,13 @@ public:
 			o::DynBuffer<ID3D11UnorderedAccessView *> nunllUav( m_srv.GetSize() );
 			memset( nunllUav.Get(), 0, nunllUav.GetDataSize() );
 			m_context->CSSetUnorderedAccessViews( 0, nunllUav.GetSize(), nunllUav.Get(), nullptr );
-		}
-	}
 
-	bool IsA( FsDevice::Type type ) const
-	{
-		return type == FsDevice::Type::Gpu;
+			m_uav.Clear();
+			m_uavTextures.Clear();
+			m_uavBuffers.Clear();
+		}
+
+		m_shaders.Clear();
 	}
 
 	FsId CreateConstantBuffer( uint size, void *data )
@@ -238,11 +352,31 @@ public:
 		m_context->CSSetConstantBuffers( 0, ArrayCount( constantBuffers ), constantBuffers );
 	}
 
-	FsId CreateTextureSRV( const Image &img )
+	FsId CreateTextureSRV( uint width, uint height, uint depth, uint pixelFormat, const void *data )
 	{
-		D3DTexture2D d3dTex = D3D_CreateTexture( m_device, img.GetData(), img.GetWidth(), img.GetHeight(), PixelFormat_GetBytesPerPixel( img.GetPixelFormat() ) );
-		D3DSRV d3dSrv = D3D_CreateTextureSRV( m_device, d3dTex );
-		m_textures.PushBack( std::move( d3dTex ) );
+		const uint bytesPerPixel = PixelFormat_GetBytesPerPixel( pixelFormat );
+		const DXGI_FORMAT d3dPixelFormat = D3D_GetPixelFormat( pixelFormat );
+		D3DTexture2D d3dTex = D3D_CreateTexture( m_device, data, width, height, depth, bytesPerPixel, d3dPixelFormat );
+		D3DSRV d3dSrv = D3D_CreateTextureSRV( m_device, d3dTex, d3dPixelFormat );
+		m_srvTextures.PushBack( std::move( d3dTex ) );
+		m_srv.PushBack( std::move( d3dSrv ) );
+		return static_cast<FsId>( m_srv.GetSize() - 1 );
+	}
+
+	FsId CreateRawBufferSRV( uint bufferSize, const void *data )
+	{
+		D3DBuffer d3dBuffer = D3D_CreateRawBuffer( m_device, bufferSize, data );
+		D3DSRV d3dSrv = D3D_CreateBufferSRV( m_device, d3dBuffer );
+		m_srvBuffers.PushBack( std::move( d3dBuffer ) );
+		m_srv.PushBack( std::move( d3dSrv ) );
+		return static_cast<FsId>( m_srv.GetSize() - 1 );
+	}
+
+	FsId CreateStructuredBufferSRV( uint elemSize, uint count, const void *data )
+	{
+		D3DBuffer d3dBuffer = D3D_CreateStructuredBuffer( m_device, elemSize, count, data );
+		D3DSRV d3dSrv = D3D_CreateBufferSRV( m_device, d3dBuffer );
+		m_srvBuffers.PushBack( std::move( d3dBuffer ) );
 		m_srv.PushBack( std::move( d3dSrv ) );
 		return static_cast<FsId>( m_srv.GetSize() - 1 );
 	}
@@ -255,6 +389,26 @@ public:
 			srv[i] = m_srv[i].Get();
 		}
 		m_context->CSSetShaderResources( 0, srv.GetSize(), srv.Get() );
+	}
+
+	FsId CreateTextureUAV( uint width, uint height, uint depth, uint pixelFormat, const void *data )
+	{
+		const uint bytesPerPixel = PixelFormat_GetBytesPerPixel( pixelFormat );
+		const DXGI_FORMAT d3dPixelFormat = D3D_GetPixelFormat( pixelFormat );
+		D3DTexture2D d3dTex = D3D_CreateTexture( m_device, data, width, height, depth, bytesPerPixel, d3dPixelFormat );
+		D3DUAV d3dUav = D3D_CreateTextureUAV( m_device, d3dTex, d3dPixelFormat );
+		m_uavTextures.PushBack( std::move( d3dTex ) );
+		m_uav.PushBack( std::move( d3dUav ) );
+		return static_cast<FsId>( m_uav.GetSize() - 1 );
+	}
+
+	FsId CreateRawBufferUAV( uint bufferSize, void *data )
+	{
+		D3DBuffer d3dBuffer = D3D_CreateRawBuffer( m_device, bufferSize, data );
+		D3DUAV d3dUav = D3D_CreateBufferUAV( m_device, d3dBuffer );
+		m_uavBuffers.PushBack( std::move( d3dBuffer ) );
+		m_uav.PushBack( std::move( d3dUav ) );
+		return static_cast<FsId>( m_uav.GetSize() - 1 );
 	}
 
 	FsId CreateStructuredBufferUAV( uint elemSize, uint count, void *data )
@@ -316,9 +470,10 @@ private:
 	D3DSampler m_pointClampSampler;
 	D3DBuffer m_constantBuffer;
 
-	o::DynArray<D3DTexture2D> m_textures;
+	o::DynArray<D3DTexture2D> m_srvTextures;
 	o::DynArray<D3DBuffer> m_srvBuffers;
 	o::DynArray<D3DSRV> m_srv;
+	o::DynArray<D3DTexture2D> m_uavTextures;
 	o::DynArray<D3DBuffer> m_uavBuffers;
 	o::DynArray<D3DUAV> m_uav;
 
@@ -374,6 +529,19 @@ FsDevice &FsDevice::operator=( FsDevice &&other )
 }
 
 
+void FsDevice::Reset()
+{
+	if ( m_type == FsDevice::Type::Cpu )
+	{
+		DEVICE_CPU->Reset();
+	}
+	else
+	{
+		DEVICE_GPU->Reset();
+	}
+}
+
+
 FsId FsDevice::CreateConstantBuffer( const FsResources &res, uint size, void *data )
 {
 	return ( m_type == FsDevice::Type::Cpu )
@@ -397,9 +565,31 @@ void FsDevice::UpdateConstantBuffer( FsId cbId, void *data ) const
 
 FsId FsDevice::CreateTextureSRV( const FsResources &res, const Image &img )
 {
+	return CreateTextureSRV( res, img.GetWidth(), img.GetHeight(), 1, img.GetPixelFormat(), img.GetData() );
+}
+
+
+FsId FsDevice::CreateTextureSRV( const FsResources &res, uint width, uint height, uint depth, uint pixelFormat, const void *data )
+{
 	return ( m_type == FsDevice::Type::Cpu )
-		? DEVICE_CPU->CreateTextureSRV( res, img )
-		: DEVICE_GPU->CreateTextureSRV( img );
+		? DEVICE_CPU->CreateTextureSRV( res, width, height, depth, pixelFormat, data )
+		: DEVICE_GPU->CreateTextureSRV( width, height, depth, pixelFormat, data );
+}
+
+
+FsId FsDevice::CreateRawBufferSRV( const FsResources &res, uint bufferSize, const void *data )
+{
+	return ( m_type == FsDevice::Type::Cpu )
+		? DEVICE_CPU->CreateRawBufferSRV( res, data )
+		: DEVICE_GPU->CreateRawBufferSRV( bufferSize, data );
+}
+
+
+FsId FsDevice::CreateStructuredBufferSRV( const FsResources &res, uint elemSize, uint count, const void *data )
+{
+	return ( m_type == FsDevice::Type::Cpu )
+		? DEVICE_CPU->CreateStructuredBufferSRV( res, data )
+		: DEVICE_GPU->CreateStructuredBufferSRV( elemSize, count, data );
 }
 
 
@@ -409,6 +599,28 @@ void FsDevice::ApplySRV() const
 	{
 		DEVICE_GPU->ApplySRV();
 	}
+}
+
+
+FsId FsDevice::CreateTextureUAV( const FsResources &res, Image &img )
+{
+	return CreateTextureUAV( res, img.GetWidth(), img.GetHeight(), 1, img.GetPixelFormat(), img.GetData() );
+}
+
+
+FsId FsDevice::CreateTextureUAV( const FsResources &res, uint width, uint height, uint depth, uint pixelFormat, void *data )
+{
+	return ( m_type == FsDevice::Type::Cpu )
+		? DEVICE_CPU->CreateTextureUAV( res, width, height, depth, pixelFormat, data )
+		: DEVICE_GPU->CreateTextureUAV( width, height, depth, pixelFormat, data );
+}
+
+
+FsId FsDevice::CreateRawBufferUAV( const FsResources &res, uint bufferSize, void *data )
+{
+	return ( m_type == FsDevice::Type::Cpu )
+		? DEVICE_CPU->CreateRawBufferUAV( res, bufferSize, data )
+		: DEVICE_GPU->CreateRawBufferUAV( bufferSize, data );
 }
 
 
